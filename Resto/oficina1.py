@@ -39,3 +39,14 @@ for x in range(2, 6): #Perceba que ele cria a váriavel x, pois x tinha antes...
     print(x)
 
 #While é bem tranquilo, while i < 6, com a váriavel sendo criada anteriormente (continue e break)
+
+# Numpy: manipulação de Dados
+# Scipy: manipulação de Dados e estatística
+# Pandas: manipulação de Dados
+# Matplotlib: para Visualização de Dados
+# Seaborn: para Visualização de Dados
+# Scikit-learn: para Machine Learning
+# TensorFlow: para Deep Learning
+# NLTK: para Linguagem Natural
+# StatsModel: estatística
+# Scrapy: webscraping, raspagem de sites
