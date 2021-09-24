@@ -22,8 +22,6 @@ int main (void) {
     //Colocando o ponteiro no arguemento da função.
     argumento(a, b, ponteiroFunc);
 
-    
-
     //Utilizando funções da biblioteca!
     ponteiroFunc = printf;
     (*ponteiroFunc)("Pode ser com qualquer funcao!");
