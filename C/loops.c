@@ -1,11 +1,11 @@
 // Laços!
 #include <stdio.h>
 
-//Juquinha conseguiu passar na cadeira 'Como fugir de um agiota NII' e quer fugir de pagar a segunda parcela, desta vez ele gastou seu dinheiro em uma bicicleta, crie um programa que mostre a velocidade da bicicleta de acordo com a aceleração constante que Juquinha produz!
+//LK o inimigo do trabalho, conseguiu passar na cadeira 'Como fugir de um agiota NII' e quer fugir de pagar a segunda parcela, desta vez ele gastou seu dinheiro em uma bicicleta, crie um programa que mostre a velocidade da bicicleta de acordo com a aceleração constante que LK produz!
 //A cada cidade ele para e volta a correr, mostre também sua perca de velocidade (aceleração^2)
-//A bibicleta do Juquinha só chega a 30km
+//A bibicleta do LK só chega a 30km
 //A cada cidade a aceleração aumenta 1
-//Se Juquinha desacelerar brutamente (Sua velocidade < 0 ao desacelerar) ele cai e é pego!
+//Se LK desacelerar brutamente (Sua velocidade < 0 ao desacelerar) ele cai e é pego!
 
 int main () {
     int curva, aceleracao, i = 0;
