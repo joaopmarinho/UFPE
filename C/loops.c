@@ -1,7 +1,7 @@
 // Laços!
 #include <stdio.h>
 
-//LK o inimigo do trabalho, conseguiu passar na cadeira 'Como fugir de um agiota NII' e quer fugir de pagar a segunda parcela, desta vez ele gastou seu dinheiro em uma bicicleta, crie um programa que mostre a velocidade da bicicleta de acordo com a aceleração constante que LK produz!
+//LK o inimigo do trabalho, conseguiu passar na cadeira 'Como fugir de um agiota NI' e quer fugir de pagar a segunda parcela, desta vez ele gastou seu dinheiro em uma bicicleta, crie um programa que mostre a velocidade da bicicleta de acordo com a aceleração constante que LK produz!
 //A cada cidade ele para e volta a correr, mostre também sua perca de velocidade (aceleração^2)
 //A bibicleta do LK só chega a 30km
 //A cada cidade a aceleração aumenta 1
@@ -24,7 +24,7 @@ int main () {
         //Aprende a não apenas criar variável no escopo
         if (i < 0) {
             curva = 0;
-            printf("Juquinha se cagou todo no chao e foi pego.\n");
+            printf("LK se cagou todo no chao e foi pego.\n");
         }
         aceleracao++;
         curva--;

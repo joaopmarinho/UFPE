@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-// LK o inimigo do trabalho, reprovou na cadeira 'Como fugir de um agiota NI' no curso de finanças, decidiu ver na prática e agora ele deve a um agiota malando, ele só quer receber apenas notas de 100 que você sacar e não devolve o troco, faça um programa que de acordo com o que LK tiver vai mostra se ele conseguiu ou não pagar o agiota e se perdeu mais dinheiro por não receber o troco.
+// LK o inimigo do trabalho, reprovou na cadeira 'Como fugir de um agiota NI' no curso de finanças, decidiu ver na prática e agora ele deve a um agiota malandro, o agiota só quer receber apenas notas de 100 que você sacar e não devolve o troco, faça um programa que de acordo com o que LK tiver vai mostra se ele conseguiu ou não pagar ao agiota e se perdeu mais dinheiro por não receber o troco.
 
 int main() {
     int divida, dinheiro = 0;
@@ -16,7 +16,7 @@ int main() {
             dinheiro = dinheiro - (divida * 100);
             printf("Esta pago\nSobrou %d", dinheiro);
         } else {
-            printf("Juquinha se lascou");
+            printf("LK tera que fugir");
         }
     } else {
         printf("Esta pago\n");
