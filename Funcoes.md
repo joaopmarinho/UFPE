@@ -12,6 +12,13 @@
  - Função pode não ter parâmetro (parênteses ainda são necessários).
  - Suas variáveis são destruídas na saída.
 
+. Forma clássica:
+tipo nome(parametro)
+tipo parametro
+{
+    codigo
+}
+
 ### Corpo
  - Funções tem escopo diferente do resto do código.
  - Variáveis locais é chamada a variável definida na função.
@@ -27,4 +34,17 @@ O padrão é a chamada por valor, no qual o método copia o valor de um argument
 
  - Recebe o endereço no parâmetro, possíbilitando alterações.
 
+## Assinatura de função (protótipo)
+void funcao();
 
+## Recursão
+ - Definição circular
+ - Uma função que chama a si mesma
+ - Nâo melhora a utilização da memória
+ - E pode ser mais lento por causa da chamada.
+ - Pode causar um estouro da pilha (stack overflow).
+ - É possível criar versões mais claras e simples de vários algoritmos.
+ - Usada pela facilidade.
+
+ Sempre utilizar comando if para forçar a função retonar.
+ Abuse de printf() para ver o qu está acontecendo.
