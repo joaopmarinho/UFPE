@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-//LK o inimigo do trabalho, estava estudando a cadeira 'Locais para se esconder de um agiota' em seu curso de finanças, com um mapa de locais que LK pode estar ele vai sair de local em local sabendo que o agiota está atrás dele, cada local que ele passa anota +1 para que evite passar por lá, crie um programa que diga qual local ele não deve passar mais.
-
 int main() {
     int xy[4][4], verif = 0, coordX, coordY;
     char input;
@@ -13,20 +11,21 @@ int main() {
     }
     int x = 0;
     int y = 0;
-    for (int k = 0; k < 16; k++) {
+    for (int k = 0; k < 20; k++) {
         scanf(" %c", &input);
-        if (input == 'e') y--;
-        if (input == 'd') y++;
-        if (input == 'b') x++;
-        if (input == 'c') x--;
+        if (input == 'e') y = (--y) < 0 ? 3 : y--;
+        if (input == 'd') y = (y + 1) % 4;
+        if (input == 'b') x = (x + 1) % 4;
+        if (input == 'c') x = (--x) < 0 ? 3 : x--;
+
         xy[x][y]++;
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                printf("%d ", xy[i][j]);
-            }
-            printf("\n");
-        }
+        // for (int i = 0; i < 4; i++) {
+        //     for (int j = 0; j < 4; j++) {
+        //         printf("%d ", xy[i][j]);
+        //     }
+        //     printf("\n");
+        // }
     }
 
     for (int i = 0; i < 4; i++) {
