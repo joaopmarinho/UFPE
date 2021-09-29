@@ -88,3 +88,36 @@ Gráfico de trabalhos que precisam ser ou já foram feitos.
 Para mostrar o progresso.
 
 ![home image](.github/ScrumMap.png)
+
+# Design Thinking
+
+Método para desenvolvimento de novos produtos.
+Forma de pensar, procura atender o usuário.
+Não é um processo linear.
+
+## Inspiração
+
+ - Processo de empatia.
+Entendimento das necessidades, entendendo o cenário.
+
+## Ideação ou definição
+
+ - Brainstorm.
+Criar ideias.
+
+## Prototipagem
+
+Implementação das ideias para entregar testes.
+ - Escrever
+ - Desenhar
+ - Modelagem
+
+## Teste
+
+MVP - Mínimo produto viável
+Entregar o MVP para avaliar o retorno e aceitação.
+
+## Buscar
+ - Desejabilidade
+ - Viabilidade
+ - Possibilidade
