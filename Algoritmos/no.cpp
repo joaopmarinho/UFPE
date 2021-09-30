@@ -19,7 +19,7 @@ class Node {
         // Node (int inicial, Node *anterior) {
         //     value = inicial;
         //     prev = anterior;
-        // }
+        // }  
 };
 
 void Node::setPrev(Node *anterior) {
