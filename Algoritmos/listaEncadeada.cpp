@@ -5,7 +5,6 @@ using namespace std;
 typedef struct Node {
     int val;
     struct Node *next;
-};
 
     Node* insert(Node *cur, int y) {
         Node *N;
@@ -37,6 +36,7 @@ typedef struct Node {
             p = cur->next;
             cur->next = p->next;
             int v = p->val;
+            cout << "Saiu " << v << endl;
             free(p); 
         }
         return cur;
@@ -61,6 +61,8 @@ typedef struct Node {
             cout << "Valor: " << cur->val << endl;
         }
     }
+};
+
 
 int main() {
     Node *atual = NULL, *cabeca = NULL;
@@ -82,24 +84,24 @@ int main() {
         if (escolha == 1) {
             printf("Digite o valor: \n");
             scanf("%d", &valor);
-            atual = insert(atual, valor);
+            atual->insert(atual, valor);
 
         } else if (escolha == 2) {
             printf("Digite a posicao: \n");
             scanf("%d", &valor);
-            atual = acess(cabeca, valor);
+            atual->acess(cabeca, valor);
 
         } else if (escolha == 3) {
             printf("O no atual sera destruido\n");
-            atual = list_delete(atual);
+            atual->list_delete(atual);
 
         } else if (escolha == 4) {
             printf("Digite o numero: \n");
             scanf("%d", &valor);
-            atual = procurar(cabeca, valor);
+            atual->procurar(cabeca, valor);
 
         } else if (escolha == 5) {
-            imprimir(cabeca);
+            cabeca->imprimir(cabeca);
 
         } else {
             if (escolha == 0) {
