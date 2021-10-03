@@ -2,22 +2,9 @@
 
 using namespace std;
 
-typedef struct {
+typedef struct Node {
     int val;
     struct Node *next;
-
-    Node* insert(Node *cur, int y) {
-        Node *N;
-        N = (Node *) malloc(sizeof(Node));
-        if (N == NULL) {
-            cout << "Error";
-            return NULL;
-        }
-        N->val = y;
-        N->next = cur->next;
-        cur->next = N;
-        return cur;
-    }
 
     Node* list_delete(Node *cur) {
         Node *p = NULL;
@@ -25,18 +12,31 @@ typedef struct {
             p = cur->next;
             cur->next = p->next;
             int v = p->val;
-            cout << "Saiu " << v << endl;
+            printf("Saiu %d\n", v);
             free(p); 
         }
         return cur;
     }
-} Node;
+
+    Node* insert(Node *top, int y) {
+        Node *N;
+        N = (Node *) malloc(sizeof(Node));
+        if (N == NULL) {
+            cout << "Error";
+            return NULL;
+        }
+        N->val = y;
+        N->next = top->next;
+        top->next = N;
+        return top;
+    }
+};
 
 int main() {
     Node *top = NULL;
-
+    
     top = (Node *) malloc(sizeof(Node));
-    if (top == NULL) printf("Chorou2");
+    if (top == NULL) printf("Chorou");
 
     top->next = NULL;
 
