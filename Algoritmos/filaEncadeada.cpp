@@ -20,35 +20,36 @@ typedef struct Node{
         return tail;
     }
 
-    Node* list_delete(Node *head) {
+    void list_delete(Node *head) {
         Node *p = NULL;
-        if (head->next != NULL) {
-            p = head->next;
+        p = head->next;
+        if (head->next->next != NULL) {
             while (p->next != NULL) {
-                head->next = p;
                 p = p->next;
+                head = head->next;
+                cout << head->next << endl;
             }
+            head->next = NULL;
             int v = p->val;
             cout << endl << "Saiu " << v << endl;
             free(p); 
         }
-        return head;
     }
 
 };
 
 int main() {
-    Node *tail = NULL, *cabeca = NULL;
-    
-    cabeca = (Node *) malloc(sizeof(Node));
-    if (cabeca == NULL) printf("Chorou1");
+    Node *tail = NULL, *head = NULL;
+
+    head = (Node *) malloc(sizeof(Node));
+    if (head == NULL) printf("Chorou1");
 
     tail = (Node *) malloc(sizeof(Node));
     if (tail == NULL) printf("Chorou2");
 
-    cabeca->next = tail;
     tail->next = NULL;
-
+    head->next = tail;
+    tail->val = 0;
     int escolha, valor;
 
     do {
@@ -60,7 +61,7 @@ int main() {
             tail->insert(tail, valor);
 
         } else if (escolha == 2) {
-            cabeca->list_delete(cabeca);
+            head->list_delete(head);
             
         } else {
             if (escolha == 0) {
@@ -72,6 +73,5 @@ int main() {
         }
     } while (escolha != 0);
     
-    free(cabeca);
     free(tail);
 }
