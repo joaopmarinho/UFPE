@@ -14,7 +14,7 @@ typedef struct Node{
             return NULL;
         }
         N->val = y;
-        N->next = tail->next;
+        N->next = (tail->next) == NULL ? tail : tail->next;
         tail->next = N;
 
         return tail;
@@ -33,6 +33,17 @@ typedef struct Node{
             int v = p->val;
             cout << endl << "Saiu " << v << endl;
             free(p); 
+        }
+    }
+
+    void imprimir(Node *tail) {
+        Node *p = NULL;
+        p = tail;
+        for (int i = 0; i < 20; i++) {
+            if (tail->val != 0) {    
+                cout << tail->val << endl;
+            }
+            tail = tail->next;
         }
     }
 
