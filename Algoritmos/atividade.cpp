@@ -2,55 +2,45 @@
 #include <string>
 
 using namespace std;
-
 struct Node {
     int id;
     int val;
     struct Node *next = NULL;
 };
-
 class Fila {
     private:
         Node *tail = NULL;
         Node *head = NULL;
         Node *atual = NULL;
+
     public:
         Fila (){
             tail = (Node *) malloc(sizeof(Node));
-            if (tail == NULL) {
-                printf("Erro na cauda\n");
-                return NULL;
-            }
             head = (Node *) malloc(sizeof(Node));
-            if (head == NULL) {
-                printf("Erro na cabeca\n");
-                return NULL;
-            }
             atual = (Node *) malloc(sizeof(Node));
 
             tail->next = NULL; tail->id = 2021;
             head->next = tail; head->id = 2021;
             atual->next = head;
         }
-        Fila insert(Node *N);
-        bool processor(int T);
-        Node* Scheduler();
-};
 
+        void insert(Node *N);
+        bool processor(int T, Node *N);
+        void Scheduler(Node *N, Node *H, Node *T, bool type);
+        Node* setTail() {return tail;};
+        Node* setHead() {return head;};
+};
 class Pilha {
     private:
         Node *top = NULL;
     public:
         Pilha (){
             top = (Node *) malloc(sizeof(Node));
-            if (top == NULL) {
-                printf("Erro no topo\n");
-                return NULL;
-            }
             top->next = NULL; top->id = 2021;
         }
         void Unloader();
         Node* insert(Node *top, int y);
+        Node* setTop() {return top;};
 };
 
 Node* Load(int x, int y);
@@ -62,7 +52,7 @@ int main() {
     Fila *input = new Fila();
     Fila *work = new Fila();
     Pilha *output = new Pilha();
-    Node *novoNo = NULL;
+    Node *novoNo = NULL, *head, *top;
     
     cin >> K;
     while (process != "END") {
@@ -76,10 +66,18 @@ int main() {
             output->Unloader();
 
         } else if (process == "PROC") {
-            input->Scheduler();
-            verif = work->processor(T);
+            verif = work->processor(T, novoNo);
+
             if (verif == true) {
-                work->Scheduler();
+                head = work->setHead();
+                top = output->setTop();
+                work->Scheduler(novoNo, head, top, verif);
+
+            } else {
+                head = input->setHead();
+                top = work->setTail();
+                input->Scheduler(novoNo, head, top, verif);
+
             }
         }
     }
@@ -97,38 +95,41 @@ Node* Load(int x, int y) {
     return N;
 }
 
-Fila* Fila::insert(Node *N) {
-    Node *tail = fila->tail;
-
+void Fila::insert(Node *N) {
     N->next = tail->next == NULL ? tail : tail->next;
     tail->next = N;
-    //Dá uma olhada no que vai retornar!
-    return tail;
 }
 
-void Fila::Scheduler() {
+void Fila::Scheduler(Node *N, Node *H, Node *T, bool type) {
     Node *p = NULL;
-    
-    p = head->next;
-    if (head->next->next != NULL) {
+    if (type == false) {
+        p = H->next;
         while (p->next != NULL) {
             p = p->next;
-            head = head->next;
+            H = H->next;
         }
-        head->next = NULL;
-        int v = p->val;
-        cout << endl << "Saiu " << v << endl;
-    }
+        H->next = NULL;
+        p->next = T->next == NULL ? tail : tail->next;
+        T->next = p;
+    
+    } else {
+        p = N->next;
+        N->next = N->next->next;
+
+        p->next = T->next == NULL ? tail : tail->next;
+        T->next = p;
+    }  
 }
 
-bool Fila::processor(int T) {
+bool Fila::processor(int T, Node *N) {
     bool id = false, saida = false;
     
     while (id == false) {
         if (atual->next->id != 2021) {
             atual->next->val -= T;
-            if (atual->val < 0) {
+            if (atual->next->val < 0) {
                 saida = true;
+                N = atual;
             }
         }
         atual = atual->next;
