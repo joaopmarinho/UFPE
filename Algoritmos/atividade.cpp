@@ -114,9 +114,9 @@ void Fila::Scheduler(Node *N, Node *H, Node *T, bool type) {
     
     } else {
         p = N->next;
-        N->next = N->next->next;
+        N = N->next->next;
 
-        p->next = T->next == NULL ? tail : tail->next;
+        p = T->next == NULL ? tail : tail->next;
         T->next = p;
     }  
 }
