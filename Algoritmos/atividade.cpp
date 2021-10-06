@@ -17,11 +17,10 @@ class Fila {
         Fila (){
             tail = (Node *) malloc(sizeof(Node));
             head = (Node *) malloc(sizeof(Node));
-            atual = (Node *) malloc(sizeof(Node));
 
             tail->next = NULL; tail->id = 2021;
             head->next = tail; head->id = 2021;
-            atual->next = head;
+            atual = head;
         }
 
         void insert(Node *N);
@@ -66,6 +65,7 @@ int main() {
             output->Unloader();
 
         } else if (process == "PROC") {
+            //ESCALONADOR ELSE VEM PRIMEIRO!
             verif = work->processor(T, novoNo);
 
             if (verif == true) {
@@ -124,16 +124,21 @@ void Fila::Scheduler(Node *N, Node *H, Node *T, bool type) {
 bool Fila::processor(int T, Node *N) {
     bool id = false, saida = false;
     
-    while (id == false) {
+    for (int i = 0; i < 3 && id == false; i++) {
         if (atual->next->id != 2021) {
-            atual->next->val -= T;
             if (atual->next->val < 0) {
                 saida = true;
                 N = atual;
+            } else {
+                atual->next->val -= T;
+                int tempo = atual->next->val >= 0 ? atual->next->val : 0;
+                printf("PROC %d %d\n", atual->next->id,tempo);
             }
+            id = true;
         }
         atual = atual->next;
-    }
+    }  
+    if (id != true) printf("PROC -1 -1\n");
 
     return saida;
 }
@@ -143,8 +148,7 @@ void Pilha::Unloader() {
     if (top->next != NULL) {
         p = top->next;
         top->next = p->next;
-        int v = p->val;
-        printf("Saiu %d\n", v);
+        printf("UNLD X %d\n", p->id);
         free(p); 
     }
 }
