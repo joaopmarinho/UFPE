@@ -131,8 +131,6 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
         //Ligar ele a pilha:
         p->next = T->next == NULL ? NULL : tail->next;
         T->next = p;
-        cout << "Retirou: " << p->id << endl;
-        cout << T->next->id << endl;
     }
 
     if (h->next != t) {
@@ -157,9 +155,12 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
 void Fila::processor(int T, Node *head, Node *tail) {
     Node *p = head->next;
     if (tail->next != NULL) {
-        p->val -= T;
+        p->val = (p->val - T) < 0 ? 0 : p->val - T;
+        printf("PROC %d %d\n", p->id, p->val);
         head->next = (p->next) == NULL ? head->next : p->next;
         tail->next = (tail->next->next) == NULL ? tail->next : tail->next->next;
+    } else {
+        printf("PROC -1 -1\n");
     }
 }
 
@@ -168,7 +169,7 @@ void Pilha::Unloader() {
     if (top->next != NULL) {
         p = top->next;
         top->next = p->next;
-        printf("UNLD X %d\n", p->id);
+        printf("UNLD %d\n", p->id);
         free(p); 
     }
 }
