@@ -26,6 +26,10 @@ class Fila {
         void processor(int T, Node *head, Node *tail);
         Node* setTail() {return tail;};
         Node* setHead() {return head;};
+        ~Fila() {
+            free(head);
+            free(tail);
+        }
 };
 class Pilha {
     private:
@@ -37,6 +41,9 @@ class Pilha {
         }
         void Unloader();
         Node* setTop() {return top;};
+        ~Pilha () {
+            free(top);
+        }
 };
 
 Node* Load(int x, int y);
@@ -98,7 +105,6 @@ void Fila::insert(Node *N) {
 void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
     Node *p = tail->next;
     if (p != NULL && p->val <= 0) {
-        cout << "Chegou aqui0" << endl;
         Node *n = head->next;
         //Cauda anda para cabeça se não for o mesmo nó
         if (n == tail->next) {
@@ -109,23 +115,18 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
             //Cauda volta
             tail->next = n; 
         }
-        cout << "Chegou aqui1" << endl;
         //Nó da cabeça for igual ao que vai retirar
         if (n->next == p || n->next == NULL) {
             //Tira sua ligação
             n->next = NULL;
         } else {
-            cout << "Chegou aqui2" << endl;
             //Cabeça volta:
             head->next = n->next;
             //Ligar o ciclo:
-            cout << "Chegou aqui3" << endl;
             while (n->next != p) {
                 n = n->next;
-                cout << "Chegou aqui4" << endl;
             }
             n->next = tail->next;
-            cout << "Chegou aqui5" << endl;
         }
         //Ligar ele a pilha:
         p->next = T->next == NULL ? NULL : tail->next;
@@ -157,12 +158,8 @@ void Fila::processor(int T, Node *head, Node *tail) {
     Node *p = head->next;
     if (tail->next != NULL) {
         p->val -= T;
-        printf("Valor tirado: %d, %d <- %d\n", p->val, tail->next->id, head->next->id);
-
         head->next = (p->next) == NULL ? head->next : p->next;
         tail->next = (tail->next->next) == NULL ? tail->next : tail->next->next;
-
-        printf("Valor tirado: %d, %d <- %d\n", p->val, tail->next->id, head->next->id);
     }
 }
 
