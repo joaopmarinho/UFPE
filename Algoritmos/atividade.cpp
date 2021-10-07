@@ -48,7 +48,7 @@ int main() {
     Fila *input = new Fila();
     Fila *work = new Fila();
     Pilha *output = new Pilha();
-    Node *novoNo = NULL, *head, *top, *proc, *escalonador, *tail;
+    Node *novoNo = NULL, *head, *top, *proc, *escl, *tail;
     
     cin >> K;
     while (process != "END") {
@@ -63,13 +63,13 @@ int main() {
 
         } else if (process == "PROC") {
             proc = work->setHead();
-            escalonador = work->setTail();
+            escl = work->setTail();
             top = output->setTop();
             head = input->setHead();
             tail = input->setTail();
 
-            Scheduler(proc, escalonador, top, head, tail);
-            work->processor(T, proc, escalonador);
+            Scheduler(proc, escl, top, head, tail);
+            work->processor(K, proc, escl);
         }
     }
 }
@@ -93,30 +93,45 @@ void Fila::insert(Node *N) {
     N->next = tail->next == NULL ? tail : tail->next;
     tail->next = N;
 
-    Node *p = N;
-    for (int i = 0; i < 20 && p->id != 2021; i++) {
-        printf("%d ", p->id);
-        p = p->next;
-    }
-    printf("\n");
 }
 
 void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
     Node *p = tail->next;
-    if (p == NULL) {
-        printf("Vazio\n");
-
-    } else {
-        if (p->val <= 0) {
-            printf("Acabou o tempo\n");
-            tail = head->next; //Scheduler aponta pra nó Processor
-            head->next->next = p->next; //Nó processor para próximo
-            //Colocou nó zerado na pilha
-            p->next = T->next == NULL ? tail : tail->next;
-            T->next = p;
+    if (p != NULL && p->val <= 0) {
+        cout << "Chegou aqui0" << endl;
+        Node *n = head->next;
+        //Cauda anda para cabeça se não for o mesmo nó
+        if (n == tail->next) {
+            //Inicia como 0
+            tail->next = NULL;
+            head->next = tail;
         } else {
-            printf("Faz nada\n");
+            //Cauda volta
+            tail->next = n; 
         }
+        cout << "Chegou aqui1" << endl;
+        //Nó da cabeça for igual ao que vai retirar
+        if (n->next == p || n->next == NULL) {
+            //Tira sua ligação
+            n->next = NULL;
+        } else {
+            cout << "Chegou aqui2" << endl;
+            //Cabeça volta:
+            head->next = n->next;
+            //Ligar o ciclo:
+            cout << "Chegou aqui3" << endl;
+            while (n->next != p) {
+                n = n->next;
+                cout << "Chegou aqui4" << endl;
+            }
+            n->next = tail->next;
+            cout << "Chegou aqui5" << endl;
+        }
+        //Ligar ele a pilha:
+        p->next = T->next == NULL ? NULL : tail->next;
+        T->next = p;
+        cout << "Retirou: " << p->id << endl;
+        cout << T->next->id << endl;
     }
 
     if (h->next != t) {
@@ -126,29 +141,28 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
         }
         h->next = p;
         //Tratando de tirar o nó.
-        cout << p->next->id << endl << p->next->val << endl;
         Node *aux = p->next;
 
         if (head->next == tail) head->next = aux;
         else head->next->next = aux;
 
-        aux->next = tail->next == NULL ? tail : tail->next;
+        aux->next = (tail->next) == NULL ? NULL : tail->next;
         tail->next = aux;
         //Colocando o ponteiro do head circular
         p->next = t;
-    } else {
-        printf("Fila vazia\n");
-    }
-
+    } 
 }
 
 void Fila::processor(int T, Node *head, Node *tail) {
     Node *p = head->next;
-    if (tail->next == NULL) printf("Vazio\n");
-    else {
+    if (tail->next != NULL) {
         p->val -= T;
-        head = p->next;
-        tail = tail->next;
+        printf("Valor tirado: %d, %d <- %d\n", p->val, tail->next->id, head->next->id);
+
+        head->next = (p->next) == NULL ? head->next : p->next;
+        tail->next = (tail->next->next) == NULL ? tail->next : tail->next->next;
+
+        printf("Valor tirado: %d, %d <- %d\n", p->val, tail->next->id, head->next->id);
     }
 }
 
