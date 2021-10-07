@@ -11,21 +11,18 @@ class Fila {
     private:
         Node *tail = NULL;
         Node *head = NULL;
-        Node *atual = NULL;
 
     public:
         Fila (){
             tail = (Node *) malloc(sizeof(Node));
             head = (Node *) malloc(sizeof(Node));
 
-            tail->next = NULL; tail->id = 2021;
-            head->next = tail; head->id = 2021;
-            atual = head;
+            tail->next = NULL; 
+            head->next = tail; 
         }
 
         void insert(Node *N);
-        bool processor(int T, Node *N);
-        void Scheduler(Node *N, Node *H, Node *T, bool type);
+        void processor(int T, Node *head);
         Node* setTail() {return tail;};
         Node* setHead() {return head;};
 };
@@ -35,23 +32,22 @@ class Pilha {
     public:
         Pilha (){
             top = (Node *) malloc(sizeof(Node));
-            top->next = NULL; top->id = 2021;
+            top->next = NULL;
         }
         void Unloader();
-        Node* insert(Node *top, int y);
         Node* setTop() {return top;};
 };
 
 Node* Load(int x, int y);
+void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t);
 
 int main() {
     int K, X, T;
-    bool verif = false;
     string process;
     Fila *input = new Fila();
     Fila *work = new Fila();
     Pilha *output = new Pilha();
-    Node *novoNo = NULL, *head, *top;
+    Node *novoNo = NULL, *head, *top, *process, *escalonador, *tail;
     
     cin >> K;
     while (process != "END") {
@@ -66,19 +62,13 @@ int main() {
 
         } else if (process == "PROC") {
             //ESCALONADOR ELSE VEM PRIMEIRO!
-            verif = work->processor(T, novoNo);
-
-            if (verif == true) {
-                head = work->setHead();
-                top = output->setTop();
-                work->Scheduler(novoNo, head, top, verif);
-
-            } else {
-                head = input->setHead();
-                top = work->setTail();
-                input->Scheduler(novoNo, head, top, verif);
-
-            }
+            process = work->setHead();
+            escalonador = work->setTail();
+            top = output->setTop();
+            head = input->setHead();
+            tail = input->setTail();
+            Scheduler(process, escalonador, top, head, tail);
+            work->processor(T, process);
         }
     }
 }
@@ -87,60 +77,75 @@ Node* Load(int x, int y) {
     Node *N;
     N = (Node *) malloc(sizeof(Node));
     if (N == NULL) {
-        cout << "Error";
+        printf("Error na criacao do no\n");
         return NULL;
     }
-    N->id = x;
-    N->val = y;
+    N->id = x; //ID
+    N->val = y; //Tempo
     return N;
 }
 
 void Fila::insert(Node *N) {
+    if (head->next == tail) head->next = N;
+    else head->next->next = N;
+
     N->next = tail->next == NULL ? tail : tail->next;
     tail->next = N;
+
+    Node *p = N;
+    for (int i = 0; i < 20 && p->id != 2021; i++) {
+        printf("%d ", p->id);
+        p = p->next;
+    }
+    printf("\n");
 }
 
-void Fila::Scheduler(Node *N, Node *H, Node *T, bool type) {
-    Node *p = NULL;
-    if (type == false) {
-        p = H->next;
-        while (p->next != NULL) {
-            p = p->next;
-            H = H->next;
+void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
+    Node *p = tail.next;
+    
+    if (tail->next == NULL) printf("Vazio\n");
+    else {
+        if (p->val <= 0) {
+            printf("Acabou o tempo\n");
+            tail = head->next; //Scheduler aponta pra nó Processor
+            head->next->next = p->next; //Nó processor para próximo
+            //Colocou nó zerado na pilha
+            p->next = T->next == NULL ? tail : tail->next;
+            T->next = p;
+        } else {
+            printf("Faz nada\n");
         }
-        H->next = NULL;
-        p->next = T->next == NULL ? tail : tail->next;
-        T->next = p;
-    
-    } else {
-        p = N->next;
-        N = N->next->next;
-
-        p = T->next == NULL ? tail : tail->next;
-        T->next = p;
-    }  
-}
-
-bool Fila::processor(int T, Node *N) {
-    bool id = false, saida = false;
-    
-    for (int i = 0; i < 3 && id == false; i++) {
-        if (atual->next->id != 2021) {
-            if (atual->next->val < 0) {
-                saida = true;
-                N = atual;
-            } else {
-                atual->next->val -= T;
-                int tempo = atual->next->val >= 0 ? atual->next->val : 0;
-                printf("PROC %d %d\n", atual->next->id,tempo);
+        if (h->next != t) {
+            p = t->next;
+            while (p->next != h->next) {
+                p = p->next;
             }
-            id = true;
-        }
-        atual = atual->next;
-    }  
-    if (id != true) printf("PROC -1 -1\n");
+            h->next = p;
+            //Tratando de tirar o nó.
+            Node *aux = p->next;
 
-    return saida;
+            if (head->next == tail) head->next = aux;
+            else head->next->next = aux;
+
+            aux->next = tail->next == NULL ? tail : tail->next;
+            tail->next = aux;
+            //Colocando o ponteiro do head circular
+            p->next = t;
+
+        } else {
+            printf("Fila vazia\n");
+        }
+    }
+}
+
+void Fila::processor(int T, Node *head, Node *tail) {
+    Node *p = head.next;
+    if (tail->next == NULL) printf("Vazio\n");
+    else {
+        p->val -= T;
+        head = p->next;
+        tail = tail->next;
+    }
 }
 
 void Pilha::Unloader() {
@@ -151,17 +156,4 @@ void Pilha::Unloader() {
         printf("UNLD X %d\n", p->id);
         free(p); 
     }
-}
-
-Node* Pilha::insert(Node *top, int y) {
-    Node *N;
-    N = (Node *) malloc(sizeof(Node));
-    if (N == NULL) {
-        cout << "Error";
-        return NULL;
-    }
-    N->val = y;
-    N->next = top->next;
-    top->next = N;
-    return top;
 }
