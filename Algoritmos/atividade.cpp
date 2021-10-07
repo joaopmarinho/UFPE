@@ -19,10 +19,11 @@ class Fila {
 
             tail->next = NULL; 
             head->next = tail; 
+            tail->id = 2021;
         }
 
         void insert(Node *N);
-        void processor(int T, Node *head);
+        void processor(int T, Node *head, Node *tail);
         Node* setTail() {return tail;};
         Node* setHead() {return head;};
 };
@@ -47,7 +48,7 @@ int main() {
     Fila *input = new Fila();
     Fila *work = new Fila();
     Pilha *output = new Pilha();
-    Node *novoNo = NULL, *head, *top, *process, *escalonador, *tail;
+    Node *novoNo = NULL, *head, *top, *proc, *escalonador, *tail;
     
     cin >> K;
     while (process != "END") {
@@ -61,14 +62,14 @@ int main() {
             output->Unloader();
 
         } else if (process == "PROC") {
-            //ESCALONADOR ELSE VEM PRIMEIRO!
-            process = work->setHead();
+            proc = work->setHead();
             escalonador = work->setTail();
             top = output->setTop();
             head = input->setHead();
             tail = input->setTail();
-            Scheduler(process, escalonador, top, head, tail);
-            work->processor(T, process);
+
+            Scheduler(proc, escalonador, top, head, tail);
+            work->processor(T, proc, escalonador);
         }
     }
 }
@@ -101,10 +102,11 @@ void Fila::insert(Node *N) {
 }
 
 void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
-    Node *p = tail.next;
-    
-    if (tail->next == NULL) printf("Vazio\n");
-    else {
+    Node *p = tail->next;
+    if (p == NULL) {
+        printf("Vazio\n");
+
+    } else {
         if (p->val <= 0) {
             printf("Acabou o tempo\n");
             tail = head->next; //Scheduler aponta pra nó Processor
@@ -115,31 +117,33 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
         } else {
             printf("Faz nada\n");
         }
-        if (h->next != t) {
-            p = t->next;
-            while (p->next != h->next) {
-                p = p->next;
-            }
-            h->next = p;
-            //Tratando de tirar o nó.
-            Node *aux = p->next;
-
-            if (head->next == tail) head->next = aux;
-            else head->next->next = aux;
-
-            aux->next = tail->next == NULL ? tail : tail->next;
-            tail->next = aux;
-            //Colocando o ponteiro do head circular
-            p->next = t;
-
-        } else {
-            printf("Fila vazia\n");
-        }
     }
+
+    if (h->next != t) {
+        p = t->next;
+        while (p->next != h->next) {
+            p = p->next;
+        }
+        h->next = p;
+        //Tratando de tirar o nó.
+        cout << p->next->id << endl << p->next->val << endl;
+        Node *aux = p->next;
+
+        if (head->next == tail) head->next = aux;
+        else head->next->next = aux;
+
+        aux->next = tail->next == NULL ? tail : tail->next;
+        tail->next = aux;
+        //Colocando o ponteiro do head circular
+        p->next = t;
+    } else {
+        printf("Fila vazia\n");
+    }
+
 }
 
 void Fila::processor(int T, Node *head, Node *tail) {
-    Node *p = head.next;
+    Node *p = head->next;
     if (tail->next == NULL) printf("Vazio\n");
     else {
         p->val -= T;
