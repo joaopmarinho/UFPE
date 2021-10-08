@@ -5,39 +5,30 @@ using namespace std;
 struct Node {
     int id;
     int val;
-    struct Node *next = NULL;
+    struct Node *next = nullptr;
 };
 class Fila {
     private:
-        Node *tail = NULL;
-        Node *head = NULL;
+        Node *tail = nullptr;
+        Node *head = nullptr;
 
     public:
         Fila (){
-            tail = (Node *) malloc(sizeof(Node));
-            head = (Node *) malloc(sizeof(Node));
-
-            tail->next = NULL; 
-            head->next = tail; 
-            tail->id = 2021;
+            head = tail; 
         }
 
         void insert(Node *N);
         void processor(int T, Node *head, Node *tail);
         Node* setTail() {return tail;};
         Node* setHead() {return head;};
-        ~Fila() {
-            free(head);
-            free(tail);
-        }
 };
 class Pilha {
     private:
-        Node *top = NULL;
+        Node *top = nullptr;
     public:
         Pilha (){
             top = (Node *) malloc(sizeof(Node));
-            top->next = NULL;
+            top->next = nullptr;
         }
         void Unloader();
         Node* setTop() {return top;};
@@ -55,7 +46,7 @@ int main() {
     Fila *input = new Fila();
     Fila *work = new Fila();
     Pilha *output = new Pilha();
-    Node *novoNo = NULL, *head, *top, *proc, *escl, *tail;
+    Node *novoNo = nullptr, *head, *top, *proc, *escl, *tail;
     
     cin >> K;
     while (process != "END") {
@@ -84,9 +75,9 @@ int main() {
 Node* Load(int x, int y) {
     Node *N;
     N = (Node *) malloc(sizeof(Node));
-    if (N == NULL) {
+    if (N == nullptr) {
         printf("Error na criacao do no\n");
-        return NULL;
+        return nullptr;
     }
     N->id = x; //ID
     N->val = y; //Tempo
@@ -94,42 +85,44 @@ Node* Load(int x, int y) {
 }
 
 void Fila::insert(Node *N) {
-    if (head->next == tail) head->next = N;
-    else head->next->next = N;
-
-    N->next = tail->next == NULL ? tail : tail->next;
-    tail->next = N;
-
+    if (head == tail) head = N;
+    else head->next = N;
+    
+    N->next = tail;
+    tail = N;
 }
 
 void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
-    Node *p = tail->next;
-    if (p != NULL && p->val <= 0) {
-        Node *n = head->next;
+    Node *p = tail;
+    if (p != nullptr && p->val <= 0) {
+        Node *n = head;
         //Cauda anda para cabeça se não for o mesmo nó
-        if (n == tail->next) {
+        if (n == tail) {
             //Inicia como 0
-            tail->next = NULL;
-            head->next = tail;
+            tail = nullptr;
+            head = tail;
         } else {
             //Cauda volta
-            tail->next = n; 
+            tail = tail->next; 
         }
         //Nó da cabeça for igual ao que vai retirar
-        if (n->next == p || n->next == NULL) {
+        if (n->next == p || n->next == nullptr) {
             //Tira sua ligação
-            n->next = NULL;
+            n->next = tail;
         } else {
             //Cabeça volta:
-            head->next = n->next;
+            // head = n->next;
+
             //Ligar o ciclo:
             while (n->next != p) {
+            //Procurar quem apontava pra
+            //Node que vai sair
                 n = n->next;
             }
-            n->next = tail->next;
+            n->next = tail;
         }
         //Ligar ele a pilha:
-        p->next = T->next == NULL ? NULL : tail->next;
+        p->next = T->next == nullptr ? nullptr : tail;
         T->next = p;
     }
 
@@ -142,31 +135,33 @@ void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
         //Tratando de tirar o nó.
         Node *aux = p->next;
 
-        if (head->next == tail) head->next = aux;
-        else head->next->next = aux;
+        if (head == tail) head = aux;
+        else head->next = aux;
 
-        aux->next = (tail->next) == NULL ? NULL : tail->next;
-        tail->next = aux;
+        aux->next = (tail) == nullptr ? nullptr : tail;
+        tail = aux;
         //Colocando o ponteiro do head circular
         p->next = t;
     } 
 }
 
 void Fila::processor(int T, Node *head, Node *tail) {
-    Node *p = head->next;
-    if (tail->next != NULL) {
+    Node *p = head;
+
+    if (tail != nullptr) {
         p->val = (p->val - T) < 0 ? 0 : p->val - T;
         printf("PROC %d %d\n", p->id, p->val);
-        head->next = (p->next) == NULL ? head->next : p->next;
-        tail->next = (tail->next->next) == NULL ? tail->next : tail->next->next;
+        printf("%d\n", p->next->id);
+        head = (p->next) == nullptr ? head : p->next;
+        tail = (tail->next) == nullptr ? tail : tail->next;
     } else {
         printf("PROC -1 -1\n");
     }
 }
 
 void Pilha::Unloader() {
-    Node *p = NULL;
-    if (top->next != NULL) {
+    Node *p = nullptr;
+    if (top->next != nullptr) {
         p = top->next;
         top->next = p->next;
         printf("UNLD %d\n", p->id);
