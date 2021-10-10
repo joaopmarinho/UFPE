@@ -4,49 +4,53 @@
 using namespace std;
 struct Node {
     int id;
-    int val;
-    struct Node *next = nullptr;
+    int tempo;
+    struct Node *next = NULL;
 };
 class Fila {
     private:
-        Node *tail = nullptr;
-        Node *head = nullptr;
+        Node *tail = NULL;
+        Node *head = NULL;
 
     public:
-        Fila (){
-            head = tail; 
-        }
-
+        Fila() { head = tail; }
         void insert(Node *N);
-        void processor(int T, Node *head, Node *tail);
         Node* setTail() {return tail;};
         Node* setHead() {return head;};
 };
+
+class Lista {
+    private:
+        Node *sentinel = NULL;
+        Node *processor = NULL;
+        Node *escalonador = NULL;
+    public:
+        Lista() {
+            processor = sentinel;
+            escalonador = sentinel;
+        }
+
+        void proc(int T);
+        void Scheduler(Node *Top, Node *head, Node *tail);
+};
+
 class Pilha {
     private:
-        Node *top = nullptr;
+        Node *top = NULL;
     public:
-        Pilha (){
-            top = (Node *) malloc(sizeof(Node));
-            top->next = nullptr;
-        }
         void Unloader();
         Node* setTop() {return top;};
-        ~Pilha () {
-            free(top);
-        }
 };
 
 Node* Load(int x, int y);
-void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t);
 
 int main() {
     int K, X, T;
     string process;
     Fila *input = new Fila();
-    Fila *work = new Fila();
-    Pilha *output = new Pilha();
-    Node *novoNo = nullptr, *head, *top, *proc, *escl, *tail;
+    Lista *work = new Lista();
+    Pilha output;
+    Node *novoNo = NULL, *head, *top, *tail;
     
     cin >> K;
     while (process != "END") {
@@ -57,17 +61,19 @@ int main() {
             input->insert(novoNo);
 
         } else if (process == "UNLD") {
-            output->Unloader();
+            output.Unloader();
 
         } else if (process == "PROC") {
-            proc = work->setHead();
-            escl = work->setTail();
-            top = output->setTop();
+            top = output.setTop();
             head = input->setHead();
             tail = input->setTail();
 
-            Scheduler(proc, escl, top, head, tail);
-            work->processor(K, proc, escl);
+            
+            work->Scheduler(top, head, tail);
+            cout << head->id << endl;
+            work->proc(K);
+
+            cout << head->id << endl;
         }
     }
 }
@@ -75,93 +81,123 @@ int main() {
 Node* Load(int x, int y) {
     Node *N;
     N = (Node *) malloc(sizeof(Node));
-    if (N == nullptr) {
+    if (N == NULL) {
         printf("Error na criacao do no\n");
-        return nullptr;
+        return NULL;
     }
     N->id = x; //ID
-    N->val = y; //Tempo
+    N->tempo = y; //Tempo
     return N;
 }
 
 void Fila::insert(Node *N) {
-    if (head == tail) head = N;
+    if (head == NULL) head = N;
     else head->next = N;
     
-    N->next = tail;
+    N->next = (tail == NULL) ? NULL : tail;
     tail = N;
 }
 
-void Scheduler(Node *head, Node *tail, Node *T, Node *h, Node *t) {
-    Node *p = tail;
-    if (p != nullptr && p->val <= 0) {
-        Node *n = head;
-        //Cauda anda para cabeça se não for o mesmo nó
-        if (n == tail) {
-            //Inicia como 0
-            tail = nullptr;
-            head = tail;
-        } else {
-            //Cauda volta
-            tail = tail->next; 
-        }
-        //Nó da cabeça for igual ao que vai retirar
-        if (n->next == p || n->next == nullptr) {
-            //Tira sua ligação
-            n->next = tail;
-        } else {
-            //Cabeça volta:
-            // head = n->next;
-
-            //Ligar o ciclo:
-            while (n->next != p) {
-            //Procurar quem apontava pra
-            //Node que vai sair
-                n = n->next;
+void Lista::Scheduler(Node *Top, Node *head, Node *tail) {
+    Node *p = sentinel;
+    if (p != NULL && escalonador->tempo <= 0) {
+        if (escalonador == sentinel) {
+            //Se for o primeiro nó
+            if (sentinel->next == NULL) sentinel = NULL;
+            else sentinel = sentinel->next;
+            //Joguei o nó na pilha
+            escalonador->next = Top;
+            Top = escalonador;
+            //Encontrando o último nó
+            while (p->next != NULL) {
+                p = p->next;
             }
-            n->next = tail;
-        }
-        //Ligar ele a pilha:
-        p->next = T->next == nullptr ? nullptr : tail;
-        T->next = p;
+            escalonador = p;
+
+        } else {
+            //Joguei o nó na pilha
+            Node *proximo = NULL;
+            if (escalonador->next != NULL) proximo = escalonador->next;
+
+            escalonador->next = Top;
+            Top = escalonador;
+            //Encontrando o nó anterior ao escalonador:
+            while (p->next != escalonador) {
+                p = p->next;
+            }
+            //Se o próximo é nulo 
+            if (proximo == NULL) {
+                escalonador = p;
+                escalonador->next = NULL;
+            } else {
+                escalonador = p;
+                escalonador->next = proximo;
+            }
+        } 
     }
 
-    if (h->next != t) {
-        p = t->next;
-        while (p->next != h->next) {
+    if (head != NULL) { //Fila não está vazia
+        p = tail;
+        //Buscando o segundo nó
+        if (tail != head) {
+            while (p->next != head) {
+                p = p->next;
+            }
+
+            head = p;
+            //Nó torna circular
             p = p->next;
+            head->next = tail;
+        } else {
+            tail = NULL;
+            head = tail;
         }
-        h->next = p;
-        //Tratando de tirar o nó.
-        Node *aux = p->next;
 
-        if (head == tail) head = aux;
-        else head->next = aux;
+        //Tirando o nó
+        if (sentinel == NULL) {
+            sentinel = p;
+            processor = p;
+            escalonador = p;
+            //ERRRO AQUI \/
+            sentinel->next = NULL;
 
-        aux->next = (tail) == nullptr ? nullptr : tail;
-        tail = aux;
-        //Colocando o ponteiro do head circular
-        p->next = t;
+        } else {
+            if (escalonador->next == NULL) {
+                escalonador->next = p;
+                p->next = NULL;
+            } else {
+                Node *aux = NULL;
+
+                aux = escalonador->next;
+                p->next = aux;
+                escalonador->next = p;
+            }
+        }
     } 
+    cout << head->id << endl;
 }
 
-void Fila::processor(int T, Node *head, Node *tail) {
-    Node *p = head;
+void Lista::proc(int K) {
+    Node *p;
 
-    if (tail != nullptr) {
-        p->val = (p->val - T) < 0 ? 0 : p->val - T;
-        printf("PROC %d %d\n", p->id, p->val);
-        printf("%d\n", p->next->id);
-        head = (p->next) == nullptr ? head : p->next;
-        tail = (tail->next) == nullptr ? tail : tail->next;
+    if (processor != NULL) {
+        processor->tempo = (processor->tempo - K) < 0 ? 0 : processor->tempo - K;
+        printf("PROC %d %d\n", processor->id, processor->tempo);
+
+        if (processor->next == NULL) processor = sentinel;
+        else processor = processor->next;
+        
+        if (escalonador->next == NULL) escalonador = sentinel;
+        else escalonador = escalonador->next; 
+
     } else {
         printf("PROC -1 -1\n");
     }
 }
 
 void Pilha::Unloader() {
-    Node *p = nullptr;
-    if (top->next != nullptr) {
+    Node *p = NULL;
+    if (top->next != NULL) {
         p = top->next;
         top->next = p->next;
         printf("UNLD %d\n", p->id);
