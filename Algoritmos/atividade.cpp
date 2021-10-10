@@ -15,8 +15,10 @@ class Fila {
     public:
         Fila() { head = tail; }
         void insert(Node *N);
-        Node* setTail() {return tail;};
-        Node* setHead() {return head;};
+        Node* showTail() {return tail;};
+        Node* showHead() {return head;};
+        void setHead(Node *N) {head = N;};
+        void setTail(Node *N) {tail = N;};
 };
 
 class Lista {
@@ -31,7 +33,7 @@ class Lista {
         }
 
         void proc(int T);
-        void Scheduler(Node *Top, Node *head, Node *tail);
+        void Scheduler(Fila *input, Node *Top);
 };
 
 class Pilha {
@@ -50,7 +52,7 @@ int main() {
     Fila *input = new Fila();
     Lista *work = new Lista();
     Pilha output;
-    Node *novoNo = NULL, *head, *top, *tail;
+    Node *novoNo = NULL, *top, *mostrar;
     
     cin >> K;
     while (process != "END") {
@@ -65,15 +67,10 @@ int main() {
 
         } else if (process == "PROC") {
             top = output.setTop();
-            head = input->setHead();
-            tail = input->setTail();
-
-            
-            work->Scheduler(top, head, tail);
-            cout << head->id << endl;
+            work->Scheduler(input, top);
             work->proc(K);
-
-            cout << head->id << endl;
+            mostrar = input->showHead();
+            cout << mostrar << endl;
         }
     }
 }
@@ -98,8 +95,12 @@ void Fila::insert(Node *N) {
     tail = N;
 }
 
-void Lista::Scheduler(Node *Top, Node *head, Node *tail) {
+void Lista::Scheduler(Fila *input, Node *Top) {
+    Node *head, *tail;
+    tail = input->showTail();
+    head = input->showHead();
     Node *p = sentinel;
+
     if (p != NULL && escalonador->tempo <= 0) {
         if (escalonador == sentinel) {
             //Se for o primeiro nó
@@ -143,14 +144,14 @@ void Lista::Scheduler(Node *Top, Node *head, Node *tail) {
             while (p->next != head) {
                 p = p->next;
             }
-
-            head = p;
+            input->setHead(p);
             //Nó torna circular
             p = p->next;
             head->next = tail;
         } else {
-            tail = NULL;
-            head = tail;
+            input->setTail((Node *){NULL});
+            tail = input->showTail();
+            input->setHead(tail);
         }
 
         //Tirando o nó
@@ -158,7 +159,6 @@ void Lista::Scheduler(Node *Top, Node *head, Node *tail) {
             sentinel = p;
             processor = p;
             escalonador = p;
-            //ERRRO AQUI \/
             sentinel->next = NULL;
 
         } else {
@@ -174,12 +174,9 @@ void Lista::Scheduler(Node *Top, Node *head, Node *tail) {
             }
         }
     } 
-    cout << head->id << endl;
 }
 
 void Lista::proc(int K) {
-    Node *p;
-
     if (processor != NULL) {
         processor->tempo = (processor->tempo - K) < 0 ? 0 : processor->tempo - K;
         printf("PROC %d %d\n", processor->id, processor->tempo);
@@ -197,9 +194,10 @@ void Lista::proc(int K) {
 
 void Pilha::Unloader() {
     Node *p = NULL;
-    if (top->next != NULL) {
-        p = top->next;
-        top->next = p->next;
+    
+    if (top != NULL) {
+        p = top;
+        top = p->next;
         printf("UNLD %d\n", p->id);
         free(p); 
     }
