@@ -101,33 +101,37 @@ void Lista::Scheduler(Fila *input, Pilha *output) {
 
     if (sentinel != NULL && escalonador->tempo <= 0) {
         if (escalonador == sentinel) {
-            //Se for o primeiro nó
+            // Se só tiver um nó
             if (sentinel->next == NULL) {
                 sentinel = NULL;
                 processor = NULL;
             }
             else sentinel = sentinel->next;
-            //Joguei o nó na pilha
-            escalonador->next = top;
-            output->setTop(escalonador);
             
-            //Encontrando o último nó
+            // Encontrando o último nó
             while (p->next != NULL) {
                 p = p->next;
             }
+            // Joguei o nó na pilha
+            escalonador->next = top;
+            output->setTop(escalonador);
+            
             if (processor == escalonador) processor = p;
             escalonador = p;
 
         } else {
             Node *proximo = NULL;
+            //Se o escalonador não for o último
             if (escalonador->next != NULL) proximo = escalonador->next;
             //Colocando nó na pilha
             escalonador->next = top;
             output->setTop(escalonador);
+            
             //Encontrando o nó anterior ao escalonador:
             while (p->next != escalonador) {
                 p = p->next;
             }
+        
             //Se o próximo é nulo 
             if (proximo == NULL) {
                 if (processor == escalonador) processor = p;
@@ -207,3 +211,11 @@ void Pilha::Unloader() {
         free(p); 
     }
 }
+
+        // Node *p = NULL;
+        // p = sentinel;
+        // while (p != NULL) {
+        //     printf("%d ", p->id);
+        //     p = p->next;
+        // }
+        // printf("\nESC: %d\n", escalonador->id);
