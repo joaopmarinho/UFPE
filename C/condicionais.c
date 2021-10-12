@@ -1,31 +1,31 @@
 #include <stdio.h>
 
 int main() {
-    int divida, dinheiro = 0, flag = 0;
-    scanf("%d %d", &dinheiro, &divida);
-    
-    if (divida > 0) { //Verificar se tem divida
-        if (dinheiro >= divida) { //Paga
-            if (divida % 100 > 0) {
-                divida = (divida / 100) + 1;
-                flag = 1;
-            }
-            else divida = 1;
-            dinheiro = dinheiro - (divida * 100);
+    int i, num, count, count1, divlove, maior;
 
-            if (dinheiro >= 0) {
-                if (flag) printf("Pegou mais\n");
-                printf("Esta pago\nSobrou %d\n", dinheiro);
-            } else {
-                printf("Pedro vai ter que fugir\n");
-            }
-        } else {
-            printf("Pedro vai ter que fugir\n");
-        }
-    } else {
-        printf("Esta pago\n");
-        if (dinheiro >= 0) printf("Sobrou %d\n", dinheiro);
-        else printf("Sobrou 0\n");
+    scanf("%d", &num);
+    count = 0;
+
+    while(num%2 == 0){
+        num/=2;
+        count++;
     }
+    for(i == 3; i <= num; i += 2){
+        divlove=num /i;
+    while(num % i == 0)
+        count1++;
+    }
+    maior = 0;
+    if (count > maior && count > count1){
+        maior = count;
+        printf("frequency: %d\n", maior);
+        printf("mostfrequency: \n");
+
+        if (count1 > maior && count1 < count) {
+            printf("\nfrequency: %d\n", count1);
+            printf("\nmostfrequency:%d", i);
+        }
+    }
+
     return 0;
 }
