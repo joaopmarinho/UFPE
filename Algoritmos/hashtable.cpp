@@ -18,7 +18,8 @@ class Music {
 };
 
 int main() {
-    int M, t, count = 0, key;
+    bool a = true;
+    int M, t, count = 0;
     string input = "Begin", s;
     Music *spotify = nullptr;
 
@@ -33,29 +34,32 @@ int main() {
         cin >> input;
         if (input == "ADD") {
             count++;
-            if (count > (M - 1)/2) {
+            if (count-1 > M/2 && a == true) {
                 M = M*2 + 1;
                 spotify = (Music*) realloc(spotify, M * sizeof(Music));
                 if (spotify == nullptr) {
                     cout << "Chorou2" << endl;
                     exit(1);
                 }
+                a = false;
             }
 
             cin >> s >> t;
+            int key = 0;
             for (int i = 0; i < s.length() ; i++) {
                 key += s[i]*i;
             }
 
             bool verif = false;
             for (int i = 0; verif != true; i++) {
-                if (spotify[(key + i) % M].tempo == 0) {
-                    spotify[(key + i) % M].nome = s;
-                    spotify[(key + i) % M].tempo = t;
-                    spotify[(key + i) % M].key = key;
+                int pos = (key + i) % M;
+                if (spotify[pos].tempo == 0) {
+                    spotify[pos].nome = s;
+                    spotify[pos].tempo = t;
+                    spotify[pos].key = key;
                     verif = true;
 
-                    cout << s << " " << (key + i) % M << endl;
+                    cout << s << " " << pos << endl;
                 } 
             }
 
@@ -75,6 +79,7 @@ int main() {
                     cout << spotify[i].nome << " " << spotify[i].total << endl;
                 }
             }
-        } else { }
+        } else { free(spotify); }
     }
+
 }
