@@ -25,7 +25,7 @@ int main() {
     cin >> M;
     spotify = (Music*) calloc(M, sizeof(Music));
     if (spotify == nullptr) {
-        cout << "Chorou";
+        cout << "Chorou" << endl;
         exit(1);
     }
 
@@ -37,7 +37,7 @@ int main() {
                 M = M*2 + 1;
                 spotify = (Music*) realloc(spotify, M * sizeof(Music));
                 if (spotify == nullptr) {
-                    cout << "Chorou2";
+                    cout << "Chorou2" << endl;
                     exit(1);
                 }
             }
@@ -46,14 +46,25 @@ int main() {
             for (int i = 0; i < s.length() ; i++) {
                 key += s[i]*i;
             }
-            
+
+            bool verif = false;
+            for (int i = 0; verif != true; i++) {
+                if (spotify[(key + i) % M].tempo == 0) {
+                    spotify[(key + i) % M].nome = s;
+                    spotify[(key + i) % M].tempo = t;
+                    spotify[(key + i) % M].key = key;
+                    verif = true;
+
+                    cout << s << " " << (key + i) % M << endl;
+                } 
+            }
 
         } else if (input == "PLAY") {
             cin >> s;
             for (int i = 0; i < M; i++) {
                 if (s == spotify[i].nome) {
                     spotify[i].Increment();
-                    cout << spotify[i].nome << " " << spotify[i].total;
+                    cout << spotify[i].nome << " " << spotify[i].total << endl;
                 }
             }
             
@@ -61,7 +72,7 @@ int main() {
             cin >> s;
             for (int i = 0; i < M; i++) {
                 if (s == spotify[i].nome) {
-                    cout << spotify[i].nome << " " << spotify[i].total;
+                    cout << spotify[i].nome << " " << spotify[i].total << endl;
                 }
             }
         } else { }
