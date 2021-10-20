@@ -18,6 +18,7 @@ class Music {
 };
 
 int main() {
+    bool verif = false;
     int M, t, count = 0;
     string input = "Begin", s;
     Music *spotify = nullptr;
@@ -31,7 +32,7 @@ int main() {
             count++;
             if (count-1 > M/2) {
                 Music *aux = nullptr;
-                aux = (Music*) calloc(M, sizeof(Music));
+                aux = (Music*) calloc(M*2, sizeof(Music));
                 int j = 0;
                 for (int i = 0; i < M; i++) {
                     if (spotify[i].key != 0) {
@@ -40,8 +41,8 @@ int main() {
                     }
                 }
                 M = M*2 + 1;
+                verif = false;
                 spotify = (Music*) calloc(M, sizeof(Music));
-                bool verif = false;
                 for (int i = 0; aux[i].key != 0; i++) {
                     verif = false;
                     for (int j = 0; verif != true; j++) {
@@ -61,7 +62,7 @@ int main() {
                 key += s[i]*i;
             }
 
-            bool verif = false;
+            verif = false;
             for (int i = 0; verif != true; i++) {
                 int pos = (key + i) % M;
                 if (spotify[pos].tempo == 0) {
@@ -80,6 +81,7 @@ int main() {
                 if (s == spotify[i].nome) {
                     spotify[i].Increment();
                     cout << spotify[i].nome << " " << spotify[i].total << endl;
+                    i = M;
                 }
             }
             
@@ -88,6 +90,7 @@ int main() {
             for (int i = 0; i < M; i++) {
                 if (s == spotify[i].nome) {
                     cout << spotify[i].nome << " " << spotify[i].total << endl;
+                    i = M;
                 }
             }
         } else { free(spotify); }
