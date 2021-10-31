@@ -33,12 +33,12 @@ int main() {
 
         for (int i = 0; i < N; i++) {
             cin >> x;
-            tree->bstInsert(source, x);
+            tree->bstInsert(tree->source, x);
         }
 
         for (int i = 0; i < N; i++) {
             cin >> x; 
-            tree->bstInsert(target, x);
+            tree->bstInsert(tree->target, x);
         }
     }
 }
