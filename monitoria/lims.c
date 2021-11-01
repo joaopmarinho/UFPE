@@ -29,6 +29,11 @@ int main(){
     //VERIFICANDO SE TODAS AS LETRAS FORA DA DIAGONAL PRINCIPAL SAO MAIUSCULAS
     for(i=0;i<N && Letras_Maiusculas==1;i++){
         for(j=0;j<N && Letras_Maiusculas==1;j++){
+            if (i == j) {
+                if(Matriz_Strings[i][j][k]!=97 && Matriz_Strings[i][j][k]!=101 && Matriz_Strings[i][j][k]!=105 && Matriz_Strings[i][j][k]!=111 && Matriz_Strings[i][j][k]!=117){
+                    Strings_Diagonais = 0;
+                }
+            }
            if(i!=j){
               for(k=0;k<strlen(Matriz_Strings[i][j]) && Letras_Maiusculas==1;k++){
                 //SE OS ELEMENTOS DA STRING i j EM CADA POSICAO DA STRING NAO SAO VOGAIS MAIUSCULAS
@@ -76,7 +81,7 @@ int main(){
 
     return 0;
 
-
+    //90%, parabéns pelos conhecimentos de programação, porém faltou passar em uma condição '[...] de sua posição na matriz e só devem conter vogais minúsculas; ', portanto tive que diminuir a nota, continue assim, está num caminho ótimo.
 }
 
 

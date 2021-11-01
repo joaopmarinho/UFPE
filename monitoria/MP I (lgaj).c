@@ -34,9 +34,9 @@ for(i=0; i<tamM; i++)
                 return 0;
             }
             while(matrizS[i][j][x]!='\0'){      //checa se há caracteres diferentes das vogais minusculas
-    if(matrizS[i][j][x]!='a' && matrizS[i][j][x]!='e' && matrizS[i][j][x]!='i' && matrizS[i][j][x]!='o' && matrizS[i][j][x]!='u'){
-                    printf("A matriz nao satisfaz a propriedade!\n");
-                    return 0;
+                if(matrizS[i][j][x]!='a' && matrizS[i][j][x]!='e' && matrizS[i][j][x]!='i' && matrizS[i][j][x]!='o' && matrizS[i][j][x]!='u'){
+                        printf("A matriz nao satisfaz a propriedade!\n");
+                        return 0;
                 }
                 x++;
             }
@@ -46,59 +46,58 @@ for(i=0; i<tamM; i++)
             x=0;
 
             while(matrizS[i][j][x]!='\0'){  //checa se há vogais maiusculas
-            if(matrizS[i][j][x]=='A' || matrizS[i][j][x]=='E' || matrizS[i][j][x]=='I' || matrizS[i][j][x]=='O' || matrizS[i][j][x]=='U'){
-                printf("A matriz nao satisfaz a propriedade!\n");
-                return 0;
-            }
-            if(matrizS[i][j][x]>90 || matrizS[i][j][x]<65){     //checa se são consoantes maiusculas
-                printf("A matriz nao satisfaz a propriedade!\n");
-                return 0;
-            }
-            x++;
+                if(matrizS[i][j][x]=='A' || matrizS[i][j][x]=='E' || matrizS[i][j][x]=='I' || matrizS[i][j][x]=='O' || matrizS[i][j][x]=='U'){
+                    printf("A matriz nao satisfaz a propriedade!\n");
+                    return 0;
+                }
+                if(matrizS[i][j][x]>90 || matrizS[i][j][x]<65){     //checa se são consoantes maiusculas
+                    printf("A matriz nao satisfaz a propriedade!\n");
+                    return 0;
+                }
+                x++;
             }
         }   
     }  
         //caso saia desses for's a matriz está qualificada a gerar uma senha!
 
-for(i=0; i<tamM; i++)             //formação da senha 
-    for(j=0; j<tamM; j++){
-        if(i==j){
-            if(i==0 && j==0)
-            strcpy(senha, matrizS[i][j]);   //como n há nada de interessante em senha, ainda, e (0,0) é 
-            else{                           //a primeira posição possível copiei seu conteúdo para senha
-            strcat(senha, matrizS[i][j]);
+    for(i=0; i<tamM; i++)             //formação da senha 
+        for(j=0; j<tamM; j++){
+            if(i==j){
+                if(i==0 && j==0)
+                    strcpy(senha, matrizS[i][j]);   //como n há nada de interessante em senha, ainda, e (0,0) é 
+                else{  //a primeira posição possível copiei seu conteúdo para senha
+                    strcat(senha, matrizS[i][j]);
+                }
+            }
+            if(i!=j){
+                x=0;
+                soma=0;
+                m=0;
+                n=0;
+
+                while(matrizS[i][j][x]!='\0'){  //realizando a soma dos valores ascii
+                    soma +=  (int)matrizS[i][j][x];
+                    x++;
+                }
+
+                while(soma!=0){
+                
+                    m++;
+                    for(n=m; n>0; n--) //m e n sao variaveis auxiliares na transformação de um inteiro para uma string
+                        somaVet[n]=somaVet[n-1];
+                    
+                    somaVet[0]=(soma%10+48);
+                    soma/=10;
+                }
+                strcat(senha, somaVet);
+
+                for(m=0; m<31; m++)
+                    somaVet[m]='\0';    //limpando os restos mortais
             }
         }
-        if(i!=j){
-            x=0;
-            soma=0;
-            m=0;
-            n=0;
 
-            while(matrizS[i][j][x]!='\0'){  //realizando a soma dos valores ascii
-            soma +=  (int)matrizS[i][j][x];
-            x++;
-            }
-
-            while(soma!=0){
-            
-            m++;
-            for(n=m; n>0; n--)              //m e n sao variaveis auxiliares na transformação de um inteiro para uma string
-                somaVet[n]=somaVet[n-1];
-            
-            somaVet[0]=(soma%10+48);
-            soma/=10;
-            }
-            strcat(senha, somaVet);
-
-            for(m=0; m<31; m++)
-                somaVet[m]='\0';    //limpando os restos mortais
-        }
-    }
-
-printf("Sua senha eh: %s", senha);
-
-
-
-return 0;
+    printf("Sua senha eh: %s", senha);
+    
+    //100%
+    return 0;
 }

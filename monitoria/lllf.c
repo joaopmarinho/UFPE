@@ -55,7 +55,7 @@ int main(void)
 
 	if (!valido)
 	{
-		printf("matriz invalida :(, %i", valido);
+		printf("matriz invalida D:, %i", valido);
 		return 0;
 	}
 	
@@ -93,4 +93,6 @@ int main(void)
 
 	printf("%s", senha);
 	return 0;
+	//80%
+	//Pois não passou nos requisitos 1 e 2 da questão, diagonal principal apenas vogais minusculas e o que não é diagonal apenas consoantes maiúsculas 
 }

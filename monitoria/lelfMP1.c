@@ -5,12 +5,13 @@ int main(){
     int dimensoes, i, j, k, analise=1, parar=0, soma_int=0;
     scanf("%d", &dimensoes);
     char matriz[dimensoes][dimensoes][31], senha[100]="\0", soma_char[100];
+
     for(i=0; i<dimensoes; i++){ //entrada da matriz
         for(j=0; j<dimensoes; j++){
             scanf(" %s", matriz[i][j]);
         }
     }
-    for(i=0; i<dimensoes; i++){ //laço para analisar se a matriz serve
+    for(i=0; i<dimensoes; i++){ //laï¿½o para analisar se a matriz serve
         for(j=0; j<dimensoes; j++){
             for(k=0; matriz[i][j][k]!='\0' && parar!=1; k++){
                 if(i==j){ //analise da diagonal principal
@@ -31,7 +32,7 @@ int main(){
         }
     }
 
-    if(analise==1){ //concatenação da senha, se a matriz serve
+    if(analise==1){ //concatenaï¿½ï¿½o da senha, se a matriz serve
         for(i=0; i<dimensoes; i++){
             for(j=0; j<dimensoes; j++){
                 if(i==j){
@@ -52,6 +53,6 @@ int main(){
     }else{
         printf("sua matriz nao satisfaz a propriedade\n");
     }
-
     return 0;
+    //100%
 }

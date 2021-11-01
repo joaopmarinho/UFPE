@@ -6,13 +6,13 @@ int main() {
   int teste1=1, teste2=1, teste3=1, numero;
   char numeroS[10];
   scanf("%d", &TAM); 
-  char matriz[TAM][TAM][31], senha[50];
+  char matriz[TAM][TAM][31], senha[50] = "\0";
   
   //LEITURA DA MATRIZ
   for (i=0; i<TAM; i++) {
     for (j=0; j<TAM; j++) {
-        scanf(" %49[^\n]", matriz[i][j]);
-        }
+      scanf(" %49[^\n]", matriz[i][j]);
+    }
   }
   
   //TESTE 1 TAMANHO DIAGONAL
@@ -41,15 +41,14 @@ int main() {
           if (matriz[i][j][k] < 65 || matriz[i][j][k] > 90) teste3=0;
 
           //VERIFICAR SE POSSUI ALGUMA VOGAL
-          else if (matriz[i][j][k]==65 || matriz[i][j][k]==69 ||
-                   matriz[i][j][k]==73 || matriz[i][j][k]==79 ||
-                   matriz[i][j][k]== 85) teste3=0;
+          else if (matriz[i][j][k]==65 || matriz[i][j][k]==69 || matriz[i][j][k]==73 || matriz[i][j][k]==79 || matriz[i][j][k]== 85) teste3=0;
         }
       }
     }
   }
 
   //SENHA
+  printf("%s\n", senha);
   if (teste1==1 && teste2==1 && teste3==1) {
     for (i=0; i<TAM; i++) {
       for (j=0; j<TAM; j++) {
@@ -68,8 +67,10 @@ int main() {
   }
 
   if (teste1==1 && teste2==1 && teste3==1)
-    printf("Sua senha é %s", senha);
-  else printf("Nao foi possível gerar sua senha");
+    printf("Sua senha %s", senha);
+  else printf("Nao foi possï¿½vel gerar sua senha");
 
 	return 0;
+  //100%
+  //Faltou considerar que a variÃ¡vel senha vem com lixo de memÃ³ria.
 }

@@ -75,6 +75,7 @@ int main()
 		printf("Matriz não satisfaz a propriedade!\n");
 	}
 
-	
+	//Não passou a verificação 2
+	//90%
 	return 0;
 }
