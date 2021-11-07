@@ -9,14 +9,14 @@ struct Node {
 };
 
 void visit(Node *root) {
-    printf("%d", root->value);
+    printf("%d ", root->value);
 }
 
 void posOrder(Node *root) {
     if (root != NULL) {
         posOrder(root->left);
         posOrder(root->right);
-        visit(root)
+        visit(root);
     }
 }
 
@@ -64,20 +64,68 @@ Node *right(Node *root) {
     return R;
 }
 
+Node *etapa(Node *root, int *L) {
+    if (root == NULL) {
+        return root;
+    } 
+
+    if (root->right != NULL) {
+        root = left(root);
+        *L = *L + 1;
+        root = etapa(root, L);
+    } else {
+        root->left = etapa(root->left, L);
+    }
+    return root;
+}
+
+Node *etapa1(Node *root, int *L, int *R) {
+    if (root == NULL) {
+        return root;
+    }
+    int x;
+    cin >> x;
+    if (root->right == NULL) {
+        while (root->value != x) {
+            root = right(root);
+            *R = *R + 1;
+        }
+    } else {
+        while (root->value != x) {
+            root = left(root);
+            *L = *L + 1;
+        }
+    }
+    root->left = etapa1(root->left, L, R);
+    root->right = etapa1(root->right, L, R);
+    return root;
+}
+
 int main() {
-    Node *source, *target;
-    int N = 0, x = 0, L = 0, R = 0;
-    bool verif;
+    int N = 0, x = 0;
     
-    while (1) {
-        cin >> N;
+    while (scanf("%d", &N) != EOF) {
+        Node *source = NULL;
+        bool verif = false;
+        int L = 0, R = 0;
 
         for (int i = 0; i < N; i++) {
             cin >> x;
+            insert(source, x);
         }
 
-        for (int i = 0; i < N; i++) {
-            cin >> x; 
-        }
+        //Etapa 1
+        source = etapa(source, &L);
+
+        //Etapa 2
+        source = etapa1(source, &L, &R);
+
+        //Etapa 3
+        cout << L << " " << R << endl;
+        posOrder(source);
+        cout << endl << verif << endl;
     }
+    //Ajeitar o L e R que não está printando
+    //Verificar se é AVL via o Height
+    //Não está printando o PosOrder
 }
