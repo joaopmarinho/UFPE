@@ -13,21 +13,24 @@ void visit(Node *root) {
 }
 
 void posOrder(Node *root) {
-    if (root != NULL) {
+    if (root == NULL) {
+        return ;
+    }    
         posOrder(root->left);
         posOrder(root->right);
         visit(root);
-    }
 }
 
 int height(Node *root) {
     int HL = 0, HR = 0;
-    if (root != NULL) {
+    if (root == NULL) {
+        return 0;   
+    }    
         HL = height(root->left);
         HR = height(root->right);
         return 1+max(HL, HR);
-    }
 }
+
 
 Node *insert(Node *root, int v) {
     Node *N = NULL;
@@ -111,21 +114,18 @@ int main() {
 
         for (int i = 0; i < N; i++) {
             cin >> x;
-            insert(source, x);
+            source = insert(source, x);
         }
 
-        //Etapa 1
+    //Etapa 1
         source = etapa(source, &L);
 
-        //Etapa 2
+    //Etapa 2
         source = etapa1(source, &L, &R);
 
-        //Etapa 3
-        cout << L << " " << R << endl;
+
         posOrder(source);
-        cout << endl << verif << endl;
+        cout<<R<<L;
     }
-    //Ajeitar o L e R que não está printando
-    //Verificar se é AVL via o Height
-    //Não está printando o PosOrder
+    return 0;
 }
