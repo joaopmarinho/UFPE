@@ -16,9 +16,9 @@ void posOrder(Node *root) {
     if (root == NULL) {
         return ;
     }    
-        posOrder(root->left);
-        posOrder(root->right);
-        visit(root);
+    posOrder(root->left);
+    posOrder(root->right);
+    visit(root);
 }
 
 int height(Node *root) {
@@ -26,9 +26,9 @@ int height(Node *root) {
     if (root == NULL) {
         return 0;   
     }    
-        HL = height(root->left);
-        HR = height(root->right);
-        return 1+max(HL, HR);
+    HL = height(root->left);
+    HR = height(root->right);
+    return 1+max(HL, HR);
 }
 
 
@@ -109,7 +109,7 @@ int main() {
     
     while (scanf("%d", &N) != EOF) {
         Node *source = NULL;
-        bool verif = false;
+        bool verif = true;
         int L = 0, R = 0;
 
         for (int i = 0; i < N; i++) {
@@ -123,9 +123,12 @@ int main() {
     //Etapa 2
         source = etapa1(source, &L, &R);
 
-
         posOrder(source);
-        cout<<R<<L;
+        cout << R << " " << L << endl;
+        if (height(source) > 1 || height(source) < 1) {
+            verif = false;
+        }
+        cout << verif << endl;
     }
     return 0;
 }
