@@ -24,13 +24,12 @@ void posOrder(Node *root) {
 int height(Node *root) {
     int HL = 0, HR = 0;
     if (root == NULL) {
-        return 0;   
+        return -2;   
     }    
     HL = height(root->left);
     HR = height(root->right);
     return 1+max(HL, HR);
 }
-
 
 Node *insert(Node *root, int v) {
     Node *N = NULL;
@@ -116,19 +115,23 @@ int main() {
             cin >> x;
             source = insert(source, x);
         }
-
     //Etapa 1
         source = etapa(source, &L);
 
     //Etapa 2
         source = etapa1(source, &L, &R);
 
+        cout << L << " " << R << endl;
         posOrder(source);
-        cout << R << " " << L << endl;
-        if (height(source) > 1 || height(source) < 1) {
+
+        if (height(source) > 1 || height(source) < -1) {
             verif = false;
         }
-        cout << verif << endl;
+        if (verif) {
+            cout << endl << "true" << endl;
+        } else {
+            cout << endl << "false" << endl;
+        }
     }
     return 0;
 }
