@@ -8,27 +8,42 @@ struct Node {
     Node *right = NULL;
 };
 
-void visit(Node *root) {
-    printf("%d ", root->value);
+void visit(Node *root, int &count) {
+    if (!count) {
+        cout << root->value;
+        count += 1;
+    } else {
+        cout << " " << root->value;
+    }
 }
 
-void posOrder(Node *root) {
+void posOrder(Node *root, int &count) {
     if (root == NULL) {
         return ;
     }    
-    posOrder(root->left);
-    posOrder(root->right);
-    visit(root);
+    posOrder(root->left, count);
+    posOrder(root->right, count);
+    visit(root, count);
 }
 
 int height(Node *root) {
     int HL = 0, HR = 0;
     if (root == NULL) {
-        return -2;   
+        return 0;   
     }    
     HL = height(root->left);
     HR = height(root->right);
     return 1+max(HL, HR);
+}
+
+int balance(Node *root) {
+    if (root == NULL){
+        return 1;
+    }
+    if (abs(height(root->left) - height(root->right)) <= 1 && balance(root->left) && balance(root->right)) {
+        return 1;
+    }
+    return 0;
 }
 
 Node *insert(Node *root, int v) {
@@ -105,11 +120,14 @@ Node *etapa1(Node *root, int *L, int *R) {
 
 int main() {
     int N = 0, x = 0;
+    bool fragoso = false;
     
     while (scanf("%d", &N) != EOF) {
+        if (fragoso) 
+            cout << endl;
         Node *source = NULL;
-        bool verif = true;
-        int L = 0, R = 0;
+        bool verif = false;
+        int L = 0, R = 0, count = 0;
 
         for (int i = 0; i < N; i++) {
             cin >> x;
@@ -122,16 +140,19 @@ int main() {
         source = etapa1(source, &L, &R);
 
         cout << L << " " << R << endl;
-        posOrder(source);
+        posOrder(source, count);
 
-        if (height(source) > 1 || height(source) < -1) {
-            verif = false;
+        if (balance(source)) {
+            verif = true;
         }
         if (verif) {
             cout << endl << "true" << endl;
         } else {
             cout << endl << "false" << endl;
         }
+        fragoso = true;
     }
+    cout << endl;
+
     return 0;
 }
