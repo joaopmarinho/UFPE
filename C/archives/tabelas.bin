@@ -1,7 +1,0 @@
-08,"ri":229,"ji":298,"co":0,"me":2,"ur":"/riot-messaging-service/v1/message/lol-platform/v1/gsm/game-update","hc":0,"bl":0},
-{"t":"br1","ts":11559636,"ri":230,"ji":299,"co":0,"me":2,"ur":"/riot-messaging-service/v1/message/lol-platform/v1/gsm/game-update","hc":0,"bl":0},
-{"t":"br1","ts":11575654,"ri":231,"ji":300,"co":0,"me":2,"ur":"/lol-login/v1/login-data-packet","hc":0,"bl":0},
-{"t":"br1","ts":11575700,"ri":232,"ji":301,"co":0,"me":2,"ur":"/lol-login/v1/login-in-game-creds","hc":0,"bl":0},
-{"t":"br1","ts":11575730,"ri":233,"ji":302,"co":0,"me":2,"ur":"/riotclient/ux-crash-count","hc":0,"bl":0},
-{"t":"br1","ts":11575763,"ri":234,"ji":303,"co":0,"me":2,"ur":"/lol-game-queues/v1/queues","hc":0,"bl":0},
-{"t":"br1","ts":11575815,"ri":235,"ji":304,"co":0,"me":2,"ur":"/lol-game-queues/v1/custo
