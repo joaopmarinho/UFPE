@@ -9,14 +9,13 @@ int main() {
 
   for (int i = 0; i < tamanho; i++) {
     int mult = frase[i] * tamanho-1;
-    if (frase[i] == 32) {
+    if (frase[i] == 32 || frase[i] == 33) {
       mult = 0;
-    } 
-    else {
-        frase[i] = 65;
+    } else {
+      frase[i] = 65;
     }
+
     for (int j = 0; j < mult; j++) {
-      // printf("%c ", frase[i]);
       frase[i]++;
       if (frase[i] > 122) {
         frase[i] = 65;
@@ -24,7 +23,6 @@ int main() {
         frase[i] = 97;
       }
     }
-    // printf("\n");
   }
 
   printf("%s", frase);
