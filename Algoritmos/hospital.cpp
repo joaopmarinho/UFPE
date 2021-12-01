@@ -8,92 +8,128 @@ struct Hospital {
 };
 
 struct Heap {
-    Hospital hospital;
+    Hospital *hospital;
     int size = 0;
     int idTotal = 0;
 };
 
-Heap* bubbleDown(int position, Heap *H) {
-    int left, right, mid;
-    Heap aux;
-    left = 2*position + 1;
-    right = 2*position + 2;
-    mid = position;
-    if(left < H->size && H[left].hospital.casos >= H[mid].hospital.casos){
-        mid = left;
+Hospital* bubbleDown(int position, Hospital *H, int size) {
+    //Declarações
+    int leftC, rightC, midC;
+    int leftP, midP, rightP;
+    int leftID, midID, rightID;
+    Hospital aux;
+    //Atribuições
+    leftP = 2*position + 1;
+    leftC = H[leftP].casos;
+    leftID = H[leftP].id;
+
+    midP = position;
+    midC = H[position].casos;
+    midID = H[position].id;
+
+    rightP = 2*position + 2;
+    rightC = H[rightP].casos;
+    rightID = H[rightP].id;
+
+
+    if(leftP < size && leftC > midC) {
+        midC = leftC;
+    } else {
+        if (leftP < size && leftID > midID) {
+            midC = leftC;
+        }
     }
-    if(right < H->size && H[right].hospital.casos >= H[mid].hospital.casos){
-        mid = right;
+
+    if(rightP < size && rightC > midC){
+        midC = rightC;
+    } else {
+        if (rightP < size && rightID > midID) {
+            midC = rightC;
+        }
     }
-    if(mid != position){
-        aux.hospital = H[mid].hospital;
-        H[mid].hospital = H[position].hospital;
-        H[position].hospital = aux.hospital;
-        return bubbleDown(mid, H);
+
+    if(midC != position){
+        aux = H[midC];
+        H[midC] = H[position];
+        H[position] = aux;
+        return bubbleDown(midC, H, size);
     }
     return H;
 }
 
-Heap* buildHeap(int size, Heap *heap) {
+Hospital* buildHeap(int size, Heap heap, Hospital *hospital) {
     int cont;
     for(cont = floor(size/2) - 1; cont >= 0; cont--){
-        bubbleDown(cont, heap);
+        bubbleDown(cont, hospital, heap.size);
     }
-    return heap;
+    return hospital;
 }
 
-Heap* heapExtract(int id, Heap *heap) {
-    Heap aux;
-    aux.hospital = heap[id].hospital;
-    heap[id].hospital = heap[heap->size-1].hospital;
-    heap[heap->size-1].hospital = aux.hospital;
-    heap->size--;
-    bubbleDown(id, heap);
-    return heap;
+Hospital* heapExtract(int id, Hospital *hospital, Heap *heap) {
+    Hospital aux;
+    aux = hospital[id];
+    hospital[id] = hospital[(*heap).size-1];
+    hospital[(*heap).size-1] = aux;
+    (*heap).size--;
+    bubbleDown(id, hospital, (*heap).size);
+    return hospital;
 }
 
-void heapSort(Heap* heap, int id, Heap* hospital) {
-    int contador = hospital->size;
+void heapSort(Heap* heap, int id, Hospital* hospital) {
+    int contador = heap->size;
     while(contador > 1){
-        heapExtract(id, heap);
+        heapExtract(id, hospital, heap);
         contador--;
     }
 }
 
-Heap* bubbleUp(int p, Heap *H) {
+int verif(int A, int B, int C, int D) {
+    if (A > B) {
+        return 1;
+    } else {
+        if (C > D) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+Hospital* bubbleUp(int p, Hospital *H) {
     int i = p - 1;
-    Heap aux;
-    while(i > 0 && H[i].hospital.casos >= H[(i-1)/2].hospital.casos){
-        aux.hospital = H[i].hospital;
-        H[i].hospital = H[(i-1)/2].hospital;
-        H[(i-1)/2].hospital = aux.hospital;
+    Hospital aux;
+
+    while(i > 0 && verif(H[i].casos, H[(i-1)/2].casos, H[i].id, H[(i-1)/2].id)){
+        aux = H[i];
+        H[i] = H[(i-1)/2];
+        H[(i-1)/2] = aux;
         i = (i-1)/2;
     }
     return H;
 }
 
-Heap* heapInsert(Heap *heap, int casos) { 
-    heap[heap->size-1].hospital.casos = casos;
-    heap[heap->size-1].hospital.id = heap->idTotal-1;
-    heap = bubbleUp(heap->size, heap);
-    return heap;
+Hospital* heapInsert(Hospital *hospital, int casos, int size, int ID) { 
+    hospital[size].casos = casos;
+    hospital[size].id = ID;
+    hospital = bubbleUp(size+1, hospital);
+    return hospital;
 }
 
-void Del(Heap *heap, int id, int *total) {
+void Del(Hospital *hospital, int id, int *total, Heap *heap) {
     int i;
     i = 0;
-    if(heap->size != 0){
-        while(i < heap->size){
-            if(id == heap[i].hospital.id){
-                *total -= heap[i].hospital.casos;
-                heap[i].hospital.casos = 0;
-                heap = heapExtract(i, heap);
-                heap = (Heap*) realloc(heap, heap->size*sizeof(Heap));
-                i = heap->size;    
+    if((*heap).size != 0){
+        while(i < (*heap).size){
+            if(id == hospital[i].id){
+                *total -= hospital[i].casos;
+                hospital[i].casos = 0;
+                hospital = heapExtract(i, hospital, heap);
+                hospital = (Hospital*) realloc(hospital, (*heap).size*sizeof(Hospital));
+                i = (*heap).size;    
             }
             i++;
         }
-        cout << heap[0].hospital.id << " " << heap[0].hospital.casos << endl;
+        cout << hospital[0].id << " " << hospital[0].casos << endl;
     }
     else{
         cout << "-1 -1" << endl;
@@ -101,51 +137,51 @@ void Del(Heap *heap, int id, int *total) {
     }
 }
 
-void In(Heap *heap, int id, int casos) {
+void In(Heap heap, int id, int casos, Hospital *hospital) {
     int i;
     i = 0;
-    while(i < heap->size){
-        if(id == heap[i].hospital.id){
-        heap[i].hospital.casos += casos;
-        cout << heap[i].hospital.casos << endl;
-        heap = buildHeap(heap->size , heap);
-        i = heap->size;    
+    while(i < heap.size){
+        if(id == hospital[i].id){
+        hospital[i].casos += casos;
+        cout << hospital[i].casos << endl;
+        hospital = buildHeap(heap.size , heap, hospital);
+        i = heap.size;    
         }
         i++;
     }
 }
 
-void Out(Heap *heap, int id, int casos) {
+void Out(Heap heap, int id, int casos, Hospital *hospital) {
     int i;
     i = 0;
-    while(i < heap->size){
-        if(id == heap[i].hospital.id){
-        heap[i].hospital.casos -= casos;
-        cout << heap[i].hospital.casos << endl;
-        heap = buildHeap(heap->size , heap);
-        i = heap->size;
+    while(i < heap.size){
+        if(id == hospital[i].id){
+        hospital[i].casos -= casos;
+        cout << hospital[i].casos << endl;
+        hospital = buildHeap(heap.size, heap, hospital);
+        i = heap.size;
         }
         i++;
     }
 }
 
-int Pay(Heap *heap) {
+int Pay(Heap heap, Hospital *hospital) {
     int R, i, pagaC;
 
     cin >> pagaC;
     i = 0;
     while (i <= pagaC) {
-        if (heap[0].hospital.casos - 1 == 0) {
-            heap[0].hospital.casos--;
+        if (hospital[0].casos - 1 == 0) {
+            hospital[0].casos--;
             R = i;
             cout << R << endl;
             break;
         } else {
-            heap[0].hospital.casos--;
+            hospital[0].casos--;
         }
-        heap = buildHeap(heap->size, heap);
+        hospital = buildHeap(heap.size, heap, hospital);
         R = i;
-        if(heap[0].hospital.casos == 0){
+        if(hospital[0].casos == 0){
             R = i;
             cout << R << endl;
         }
@@ -160,18 +196,18 @@ int Pay(Heap *heap) {
 
 int main() {
     int N, i, total = 0, casos = 0, id;
-    Heap *heap = NULL;
+    Heap heap;
     string input;
 
     cin >> N;
-    heap = (Heap *)calloc(N, sizeof(Heap));
+    heap.hospital = (Hospital*)calloc(N, sizeof(Hospital));
 
     for (i = 0; i < N; i++) {
         cin >> casos;
         total += casos;
-        heap->idTotal++;
-        heap->size++;
-        heap = heapInsert(heap, casos);
+        heap.idTotal++;
+        heap.size++;
+        heap.hospital = heapInsert(heap.hospital, casos, heap.size-1, heap.idTotal-1);
     }
 
     while (input != "END") {
@@ -179,29 +215,29 @@ int main() {
         if (input == "NEW") {
             cin >> id;
             cin >> casos;
-            heap->size++;
+            heap.size++;
             total += casos;
-            heap->idTotal++;
-            heap = (Heap*) realloc(heap, heap->size*sizeof(Heap));
-            heap = heapInsert(heap, casos);
-            cout << heap[0].hospital.id << " " << heap[0].hospital.casos << endl;
+            heap.idTotal++;
+            heap.hospital = (Hospital*) realloc(heap.hospital, heap.size*sizeof(Hospital));
+            heap.hospital = heapInsert(heap.hospital, casos, heap.size-1, heap.idTotal-1);
+            cout << heap.hospital[0].id << " " << heap.hospital[0].casos << endl;
         }
         else if (input == "DEL") {
             cin >> id;
-            Del(heap, id, &total);
+            Del(heap.hospital, id, &total, &heap);
         }
         else if (input == "IN") {
             cin >> id >> casos;
             total += casos;
-            In(heap, id, casos);
+            In(heap, id, casos, heap.hospital);
         }
         else if (input == "OUT") {
             cin >> id >> casos;
             total -= casos;
-            Out(heap, id, casos);
+            Out(heap, id, casos, heap.hospital);
         }
         else if (input == "PAY") {
-            int R = Pay(heap);
+            int R = Pay(heap, heap.hospital);
             total = total - R;
         }
         else {
