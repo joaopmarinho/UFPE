@@ -1,9 +1,22 @@
-addi a1, x0, 0xff
-lw a2, t1
-lw a3, t2
-slli a1, a1, 16
-and a4, a2, a1
-and a3, a4, a3
+lw s2, A
+lw s3, B
+lw s5, B
+
+srli s2, s2, 4
+slli s2, s2, 24
+srli s2, s2, 4
+
+slli s5, s5, 4
+srli s5, s5, 4
+sub s4, s3, s5
+
+slli s5, s5, 12
+srli s5, s5, 12
+add s5, s5, s2
+add s5, s5, s4
+lw x10, A
+add x11, x11, s5
+
 halt
-t1: .word 0xffff0000
-t2: .word 0x0000ffff
+A : .word 0xffffffff
+B : .word 0xaaaaaaaa
