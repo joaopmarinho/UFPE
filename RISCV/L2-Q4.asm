@@ -1,6 +1,6 @@
-lw a1, A
-
-xori a2, a1, -1
-
+lw x10, zero
+lw x11, um
+xori x11, x10, -1
 halt
-A: .word 0
+zero: .word 0
+um: .word 1
