@@ -10,10 +10,18 @@
 #define PASSO 1
 #define FINAL 15
 
-pthread_t threads[NUM_THREADS];
+typedef struct {
+    int inicio;
+    int passo;
+    int final;
+    int thread_index;
+    void (*f)(int);
+} Args;
+
+pthread_t THREADS[NUM_THREADS];
 
 void printInteracoes(int i);
-int loop(int inicio, int passo, int final, void (*f)(int));
+void *loop(void *args);
 int schedule_static(int chunk_size, int num_threads, int iteracoes_restantes);
 int schedule_dynamic(int chunk_size, int iteracoes_restantes);
 int schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes);
@@ -50,26 +58,39 @@ int schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes) {
 }
 
 // For para ser a rotina das threads:
-int loop(int inicio, int passo, int final, void (*f)(int)) {
+void *loop(void *args) {
 // Como a questão não exigiu exclusão mútua, evitei regiões críticas.
-    if (inicio >= final) return 0;
-    (*f)(inicio);
+    Args *props = (Args*) args;
+    // Definindo variáveis:
+    int inicio = props->inicio;
+    int final = props->final;
+    int index = props->thread_index;
+    int passo = props->passo;
+    // for padrão:
+    if (inicio >= final) pthread_join(THREADS[index], NULL);
+    (*props).f(inicio);
     inicio += passo;
-    loop(inicio, passo, final, f);
+    loop(args);
 }
 
 void omp_for(int inicio, int passo, int final, int schedule, int chunk_size, void (*f)(int)) {
-    int final_step, thread, iteracoes_restantes = final;
+    int thread, iteracoes_restantes = final;
+    Args *props = (Args*) malloc(sizeof(Args));
+    props->f = printInteracoes;
+    props->inicio = inicio;
+    props->passo = passo;
+    props->final = final;
 
     if (schedule == 1) {
         printf("Foi escolhido o escalonador estatico.\n");
+
         for (thread = 0; iteracoes_restantes > 0; thread++) {
             int chunk = schedule_static(chunk_size, NUM_THREADS, iteracoes_restantes);
             for (int i = 0; i < NUM_THREADS; i++){
                 iteracoes_restantes -= chunk;
-                final_step = inicio + chunk;
-                loop(inicio, passo, final_step, f);
-                inicio = final_step;
+                props->final = inicio + chunk;
+                pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
+                props->inicio = props->final;
                 if (inicio >= final - 1) i = NUM_THREADS;
                 // Evitando erros
             }
@@ -77,24 +98,30 @@ void omp_for(int inicio, int passo, int final, int schedule, int chunk_size, voi
         }
     } else if (schedule == 2) {
         printf("Foi escolhido o escalonador dinamico.\n");
+
         for (int thread = 0; iteracoes_restantes > 0; thread++) {
+            props->thread_index = thread % NUM_THREADS;
+            printf("Thread[%d]: ", props->thread_index);
             int chunk = schedule_dynamic(chunk_size, iteracoes_restantes);
             iteracoes_restantes -= chunk;
-            final_step = inicio + chunk;
-            loop(inicio, passo, final_step, f);
-            inicio = final_step;
+            props->final = inicio + chunk;
+            pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
+            props->inicio = props->final;
             // Evitando erros
             if (chunk == 0) iteracoes_restantes = 0;
         }
 
     } else if (schedule == 3) {
         printf("Foi escolhido o escalonador guiado.\n");
+        
         for (int thread = 0; iteracoes_restantes > 0; thread++) {
+            props->thread_index = thread % NUM_THREADS;
+            printf("Thread[%d]: ", props->thread_index);
             int chunk = schedule_guided(chunk_size, NUM_THREADS, iteracoes_restantes);
             iteracoes_restantes -= chunk;
-            final_step = inicio + chunk;
-            loop(inicio, passo, final_step, f);
-            inicio = final_step;
+            props->final = inicio + chunk;
+            pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
+            props->inicio = props->final;
             // Evitando erros
             if (chunk == 0) iteracoes_restantes = 0;
         }
