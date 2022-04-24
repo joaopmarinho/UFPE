@@ -59,7 +59,6 @@ int schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes) {
 
 // For para ser a rotina das threads:
 void *loop(void *args) {
-// Como a questão não exigiu exclusão mútua, evitei regiões críticas.
     Args *props = (Args*) args;
     // Definindo variáveis:
     int inicio = props->inicio;
@@ -69,7 +68,7 @@ void *loop(void *args) {
     // for padrão:
     if (inicio >= final) pthread_join(THREADS[index], NULL);
     (*props).f(inicio);
-    inicio += passo;
+    props->inicio += passo;
     loop(args);
 }
 
@@ -87,11 +86,14 @@ void omp_for(int inicio, int passo, int final, int schedule, int chunk_size, voi
         for (thread = 0; iteracoes_restantes > 0; thread++) {
             int chunk = schedule_static(chunk_size, NUM_THREADS, iteracoes_restantes);
             for (int i = 0; i < NUM_THREADS; i++){
+                props->thread_index = thread % NUM_THREADS;
                 iteracoes_restantes -= chunk;
-                props->final = inicio + chunk;
+                props->final = props->inicio + chunk;
+                printf("Thread[%d]: ", props->thread_index);
+                printf("I: %d -> F: %d\n", props->inicio, props->final);
                 pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
                 props->inicio = props->final;
-                if (inicio >= final - 1) i = NUM_THREADS;
+                if (props->inicio >= final - 1) i = NUM_THREADS;
                 // Evitando erros
             }
             if (chunk == 0) iteracoes_restantes = 0;
@@ -101,64 +103,37 @@ void omp_for(int inicio, int passo, int final, int schedule, int chunk_size, voi
 
         for (int thread = 0; iteracoes_restantes > 0; thread++) {
             props->thread_index = thread % NUM_THREADS;
-            printf("Thread[%d]: ", props->thread_index);
             int chunk = schedule_dynamic(chunk_size, iteracoes_restantes);
             iteracoes_restantes -= chunk;
-            props->final = inicio + chunk;
+            props->final = props->inicio + chunk;
+            printf("Thread[%d]: ", props->thread_index);
+            printf("I: %d -> F: %d\n", props->inicio, props->final);
             pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
             props->inicio = props->final;
             // Evitando erros
             if (chunk == 0) iteracoes_restantes = 0;
         }
-
+        free(props);
     } else if (schedule == 3) {
         printf("Foi escolhido o escalonador guiado.\n");
         
         for (int thread = 0; iteracoes_restantes > 0; thread++) {
             props->thread_index = thread % NUM_THREADS;
-            printf("Thread[%d]: ", props->thread_index);
             int chunk = schedule_guided(chunk_size, NUM_THREADS, iteracoes_restantes);
             iteracoes_restantes -= chunk;
-            props->final = inicio + chunk;
+            props->final = props->inicio + chunk;
+            printf("Thread[%d]: ", props->thread_index);
+            printf("I: %d -> F: %d\n", props->inicio, props->final);
             pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
             props->inicio = props->final;
             // Evitando erros
             if (chunk == 0) iteracoes_restantes = 0;
         }
-
+        free(props);
     } else {
         printf("Escalonador inválido\n");
         printf("Retornando ao main:\n");
         main();
+        free(props);
     }
 }
-
-//  Como funciona: for(int i = inicio ; i < final ; i += passo ){f(i);}
-
-// printf("Foi escolhido o escalonador estático.\n");
-// int iteracoes_restantes = final;
-// while (iteracoes_restantes > 0) {
-//     int chunk = schedule_static(chunk_size, NUM_THREADS, iteracoes_restantes);
-//     printf("Chuck: %d\n", chunk);
-//     for (int thread = 0; thread < NUM_THREADS; thread++) {
-//         for (int iteracoes = 0; iteracoes < chunk; iteracoes++) {
-//             iteracoes_restantes--;
-//             printf("Thread[%d]: ", thread%NUM_THREADS);
-//             (*f)(inicio);
-//             inicio++;
-//         }
-//     }
-// }
-
-// printf("Foi escolhido o escalonador dinamico.\n");
-// int iteracoes_restantes = final;
-// for (int thread = 0; iteracoes_restantes > 0; thread++) {
-//     int chunk = schedule_dynamic(chunk_size, iteracoes_restantes);
-//     printf("Chuck: %d\n", chunk);
-//     for (int iteracoes = 0; iteracoes < chunk; iteracoes++) {
-//         iteracoes_restantes--;
-//         printf("Thread[%d]: ", thread%NUM_THREADS);
-//         (*f)(inicio);
-//         inicio++;
-//     }  
-// }   
