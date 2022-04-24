@@ -54,7 +54,7 @@ int main() {
 }
 
 void *preencher(void *arg){
-  int *ID_THREAD = (int*) arg;
+  int *ID_THREAD = arg;
   char qtd_arquivo[5];
   int num_produto = 0;
 
