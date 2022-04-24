@@ -5,7 +5,7 @@
 
 // Professor disse que poderia deixar tudo pré-definido.
 #define NUM_ARQUIVOS 10
-#define NUM_THREADS 10
+#define NUM_THREADS 5
 #define NUM_ITEMS 10
 
 typedef struct {
@@ -20,18 +20,22 @@ pthread_mutex_t open_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t produto_mutex[NUM_ITEMS];
 // O vetor para contagem de produtos:
 int produtos[NUM_ITEMS] = {0};
+char local_produto[20], tipo_arquivo[10];
+int count = 1;
 
 void *preencher();
 
 int main() {
+  // Variável para abertura de arquivos:
+  strcpy(tipo_arquivo, ".txt");
   // Iniciar mutexes dos produtos:
   for(int i = 0; i < NUM_ITEMS; i++) {
     pthread_mutex_init(&produto_mutex[i], NULL);
   }
   // Setando ID e iniciando rotina das threads:
-  for(int i = 0; i < NUM_THREADS; i++){
-    threads[i].id = i;
-    pthread_create(&threads[i].thread, NULL, preencher, &threads[i].id);
+  for(int i = 0; i < NUM_ARQUIVOS; i++){
+    threads[i % NUM_THREADS].id = i % NUM_THREADS;
+    pthread_create(&threads[i % NUM_THREADS].thread, NULL, preencher, &threads[i % NUM_THREADS].id);
   }
   
   for(int i = 0; i < NUM_THREADS; i++){
@@ -51,18 +55,16 @@ int main() {
 
 void *preencher(void *arg){
   int *ID_THREAD = (int*) arg;
-  char local_produto[20], tipo_arquivo[10], qtd_arquivo[5];
+  char qtd_arquivo[5];
   int num_produto = 0;
 
   printf("Rotina iniciada thread[%d]\n", (*ID_THREAD));
-  // Variáveis para abertura de arquivos:
-  strcpy(local_produto, "./produtos/");
-  // strcpy(qtd_arquivo, (*ID_THREAD));
-  strcpy(tipo_arquivo, ".txt");
-  sprintf(qtd_arquivo, "%d", (*ID_THREAD)+1);
+
   // Região crítica para abertura de arquivo:
   pthread_mutex_lock(&open_mutex);
+  sprintf(qtd_arquivo, "%d", count); count++;
   printf("Thread[%d] abriu %s.txt\n", (*ID_THREAD), qtd_arquivo);
+  strcpy(local_produto, "./produtos/");
   // local_produto = './produtos/x';
   strcat(local_produto, qtd_arquivo);
   // local_produto = './produtos/x.in';
