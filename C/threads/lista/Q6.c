@@ -11,6 +11,11 @@
 #define FINAL 15
 
 typedef struct {
+    int *partition;
+    int num_partition;
+} Divisions;
+
+typedef struct {
     int inicio;
     int passo;
     int final;
@@ -19,12 +24,15 @@ typedef struct {
 } Args;
 
 pthread_t THREADS[NUM_THREADS];
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+int CHUNKS[1000];
+Divisions partition = {CHUNKS, 0};
 
 void printInteracoes(int i);
 void *loop(void *args);
-int schedule_static(int chunk_size, int num_threads, int iteracoes_restantes);
-int schedule_dynamic(int chunk_size, int iteracoes_restantes);
-int schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes);
+Divisions *schedule_static(int chunk_size, int num_threads, int iteracoes_restantes);
+Divisions *schedule_dynamic(int chunk_size, int iteracoes_restantes);
+Divisions *schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes);
 void omp_for( int inicio, int passo, int final, int schedule, int chunk_size, void (*f)(int));
 
 int main() {
@@ -40,21 +48,55 @@ void printInteracoes(int i) {
     printf("%d\n", i);
 }
 
-int schedule_static(int chunk_size, int num_threads, int iteracoes_restantes) {
-    if (chunk_size * num_threads < iteracoes_restantes) return chunk_size;
-    int retorno = iteracoes_restantes / num_threads; // Evitando erros
-    return retorno == 0 ? iteracoes_restantes % num_threads : retorno;
+Divisions *schedule_static(int chunk_size, int num_threads, int iteracoes_restantes) {
+    while (iteracoes_restantes > 0) {
+        partition.num_partition++;
+
+        if (chunk_size * num_threads < iteracoes_restantes)
+            partition.partition[partition.num_partition - 1] = chunk_size;
+        else {
+            int retorno = iteracoes_restantes / num_threads; // Evitando erros
+            if (retorno == 0) 
+                retorno = iteracoes_restantes % num_threads;
+            partition.partition[partition.num_partition - 1] = retorno;
+        }
+        // Evitando erros
+        if (partition.partition[partition.num_partition - 1] == 0) partition.num_partition--;
+        iteracoes_restantes -= partition.partition[partition.num_partition - 1];
+    }
+    return &partition;
 }
 
-int schedule_dynamic(int chunk_size, int iteracoes_restantes) {
-    if (iteracoes_restantes >= chunk_size) return chunk_size;
-    return iteracoes_restantes % chunk_size;
+Divisions *schedule_dynamic(int chunk_size, int iteracoes_restantes) {
+    while (iteracoes_restantes > 0) {
+        partition.num_partition++;
+
+        if (iteracoes_restantes >= chunk_size) 
+            partition.partition[partition.num_partition - 1] = chunk_size;
+        else 
+            partition.partition[partition.num_partition - 1] = iteracoes_restantes % chunk_size;
+        // Evitando erros
+        if (partition.partition[partition.num_partition - 1] == 0) partition.num_partition--;
+        iteracoes_restantes -= partition.partition[partition.num_partition - 1];
+    }
+    return &partition;
 }
 
-int schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes) {
-    if (ceil(iteracoes_restantes / num_threads) < chunk_size ) return chunk_size;
-    float retorno = ceil((float)iteracoes_restantes / (float)num_threads);
-    return (int)retorno;
+Divisions *schedule_guided(int chunk_size, int num_threads, int iteracoes_restantes) {
+    while (iteracoes_restantes > 0) {
+        partition.num_partition++;
+        
+        if (ceil(iteracoes_restantes / num_threads) < chunk_size ) 
+            partition.partition[partition.num_partition - 1] = chunk_size;
+        else {
+            float retorno = ceil((float)iteracoes_restantes / (float)num_threads);
+            partition.partition[partition.num_partition - 1] = (int)retorno;
+        }
+        // Evitando erros
+        if (partition.partition[partition.num_partition - 1] == 0) partition.num_partition--;
+        iteracoes_restantes -= partition.partition[partition.num_partition - 1];
+    }
+    return &partition;
 }
 
 // For para ser a rotina das threads:
@@ -73,67 +115,73 @@ void *loop(void *args) {
 }
 
 void omp_for(int inicio, int passo, int final, int schedule, int chunk_size, void (*f)(int)) {
-    int thread, iteracoes_restantes = final;
-    Args *props = (Args*) malloc(sizeof(Args));
-    props->f = printInteracoes;
-    props->inicio = inicio;
-    props->passo = passo;
-    props->final = final;
-
     if (schedule == 1) {
         printf("Foi escolhido o escalonador estatico.\n");
+        Divisions *chunks = schedule_static(chunk_size, NUM_THREADS, final);
+        int copy_num_partition = chunks->num_partition;
+        Args props[30] = {inicio, passo, final, 0, f};
+        float ondas = ceil((float)copy_num_partition / (float)NUM_THREADS);
+        int start = inicio;
 
-        for (thread = 0; iteracoes_restantes > 0; thread++) {
-            int chunk = schedule_static(chunk_size, NUM_THREADS, iteracoes_restantes);
-            for (int i = 0; i < NUM_THREADS; i++){
-                props->thread_index = thread % NUM_THREADS;
-                iteracoes_restantes -= chunk;
-                props->final = props->inicio + chunk;
-                printf("Thread[%d]: ", props->thread_index);
-                printf("I: %d -> F: %d\n", props->inicio, props->final);
-                pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
-                props->inicio = props->final;
-                if (props->inicio >= final - 1) i = NUM_THREADS;
-                // Evitando erros
-            }
-            if (chunk == 0) iteracoes_restantes = 0;
+        // Configurando as ondas:
+        for (int thread = 0; thread < copy_num_partition; thread++){
+            props[thread].thread_index = thread % NUM_THREADS;
+            props[thread].final = props[thread].inicio + chunks->partition[thread];
+
+            start = props[thread].final;
+            if (thread != copy_num_partition) // Pegando o inicio da próxima:
+                props[thread + 1].inicio = start;
+
+            printf("N: %d - I: %d, F: %d\n", props[thread].thread_index, props[thread].inicio, props[thread].final);
+        }
+        for (int k = 0; k < copy_num_partition; k++) {
+            pthread_create(&THREADS[k % NUM_THREADS], NULL, loop, &props[k]);
         }
     } else if (schedule == 2) {
         printf("Foi escolhido o escalonador dinamico.\n");
+        Divisions *chunks = schedule_dynamic(chunk_size, final);
+        int copy_num_partition = chunks->num_partition;
+        Args props[30] = {inicio, passo, final, 0, f};
+        float ondas = ceil((float)copy_num_partition / (float)NUM_THREADS);
+        int start = inicio;
 
-        for (int thread = 0; iteracoes_restantes > 0; thread++) {
-            props->thread_index = thread % NUM_THREADS;
-            int chunk = schedule_dynamic(chunk_size, iteracoes_restantes);
-            iteracoes_restantes -= chunk;
-            props->final = props->inicio + chunk;
-            printf("Thread[%d]: ", props->thread_index);
-            printf("I: %d -> F: %d\n", props->inicio, props->final);
-            pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
-            props->inicio = props->final;
-            // Evitando erros
-            if (chunk == 0) iteracoes_restantes = 0;
+        for (int thread = 0; thread < copy_num_partition; thread++){
+            props[thread].thread_index = thread % NUM_THREADS;
+            props[thread].final = props[thread].inicio + chunks->partition[thread];
+
+            start = props[thread].final;
+            if (thread != copy_num_partition) // Pegando o inicio da próxima:
+                props[thread + 1].inicio = start;
+            printf("N: %d - I: %d, F: %d\n", props[thread].thread_index, props[thread].inicio, props[thread].final);
         }
-        free(props);
+        for (int k = 0; k < copy_num_partition; k++) {
+            pthread_create(&THREADS[k % NUM_THREADS], NULL, loop, &props[k]);
+        }
+
     } else if (schedule == 3) {
         printf("Foi escolhido o escalonador guiado.\n");
-        
-        for (int thread = 0; iteracoes_restantes > 0; thread++) {
-            props->thread_index = thread % NUM_THREADS;
-            int chunk = schedule_guided(chunk_size, NUM_THREADS, iteracoes_restantes);
-            iteracoes_restantes -= chunk;
-            props->final = props->inicio + chunk;
-            printf("Thread[%d]: ", props->thread_index);
-            printf("I: %d -> F: %d\n", props->inicio, props->final);
-            pthread_create(&THREADS[thread%NUM_THREADS], NULL, loop, props);
-            props->inicio = props->final;
-            // Evitando erros
-            if (chunk == 0) iteracoes_restantes = 0;
+        Divisions *chunks = schedule_guided(chunk_size, NUM_THREADS, final);
+        int copy_num_partition = (int) chunks->num_partition;
+        Args props[30] = {inicio, passo, final, 0, f};
+        float ondas = ceil((float)copy_num_partition / (float)NUM_THREADS);
+        int start;
+
+        for (int thread = 0; thread < copy_num_partition; thread++){
+            props[thread].thread_index = thread % NUM_THREADS;
+            props[thread].final = props[thread].inicio + chunks->partition[thread];
+
+            start = props[thread].final;
+            if (thread != copy_num_partition) // Pegando o inicio da próxima:
+                props[thread + 1].inicio = start;
+            printf("N: %d - I: %d, F: %d\n", props[thread].thread_index, props[thread].inicio, props[thread].final);
+            
         }
-        free(props);
+        for (int k = 0; k < copy_num_partition; k++) {
+            pthread_create(&THREADS[k % NUM_THREADS], NULL, loop, &props[k]);
+        }
     } else {
         printf("Escalonador inválido\n");
         printf("Retornando ao main:\n");
         main();
-        free(props);
     }
 }
