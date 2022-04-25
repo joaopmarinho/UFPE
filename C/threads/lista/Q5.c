@@ -26,7 +26,7 @@ pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 // Não deixaram usar semáforo:
 pthread_cond_t buffer_full = PTHREAD_COND_INITIALIZER;
 pthread_cond_t buffer_empty = PTHREAD_COND_INITIALIZER;
-
+// Funções da questão e rotinas
 BlockingQueue* newBlockingQueue(unsigned inSizeBuffer);
 void putBlockingQueue(BlockingQueue* Q, int newValue);
 int takeBlockingQueue(BlockingQueue* Q);
@@ -67,14 +67,17 @@ void *rotinaProdutor(void *arg) {
     n = rand()%1000;
     if (fila->statusBuffer >= fila->sizeBuffer)  {
       printf("Fila cheia\n");
+      // Trava a produção:
       pthread_cond_wait(&buffer_full, &mutex);
     }
     else {
       pthread_mutex_lock(&mutex_prod);
       putBlockingQueue(arg, n);
       pthread_mutex_unlock(&mutex_prod);
+      // Destrava o consumo
       pthread_cond_signal(&buffer_empty);
-      printf("Produzindo numero %d\n", n);
+      printf("Put: %d\n", n);
+      // Pra poder ver o progresso
       sleep((1 + rand()%5));
     }
   }
@@ -86,13 +89,16 @@ void *rotinaConsumidor(void *arg) {
   while(1) {
     if (fila->statusBuffer <= 0) {
       printf("Fila vazia\n");
+      // Trava o consumo
       pthread_cond_wait(&buffer_empty, &mutex);
     } else {
       pthread_mutex_lock(&mutex_cons);
       n = takeBlockingQueue(arg);
       pthread_mutex_unlock(&mutex_cons);
+      // Destrava a produção
       pthread_cond_signal(&buffer_full);
-      printf("Consumindo numero %d\n", n);
+      printf("Take: %d\n", n);
+      // Pra poder ver o progresso
       sleep(1 + (rand()%5));
     }
   }
