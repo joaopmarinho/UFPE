@@ -59,3 +59,45 @@ CREATE TABLE ESCREVE (
 -- CRIANDO UMA TABELA A PARTIR DE UMA CONSULTA
 CREATE TABLE MELHORES_ARTIGOS AS SELECT * FROM ARTIGO WHERE NOTA >= 9;
 
+-----------------------------------------------------------------------
+
+-- CRIAÇÃO DE INDICES:
+
+-- Tabela tem muitas linhas.
+-- Contém inúmeros valores distintos.
+-- Coluna é muito usada para filtros (consultada).
+-- Coluna sofre pouca atualização (CPF).
+
+CREATE INDEX idx_usu_nome ON PESQUISADOR (NOME);
+-- DROP INDEX idx_usu_nome;
+
+-----------------------------------------------------------------------
+
+-- CRIAÇÃO DE SEQUÊNCIAS:
+
+CREATE SEQUENCE CONTAR
+START WITH 1
+INCREMENT BY 1;
+
+CREATE SEQUENCE CONTARNEGATIVO
+START WITH 0
+INCREMENT BY -1;
+
+DROP SEQUENCE CONTARNEGATIVO;
+
+-- Utilização:
+-- INSERT INTO ARTIGO (MAT, TITULO, NOTA, IDIOMA) 
+-- VALUES (NEXT VALUE FOR CONTAR, 'XPTO', 9, 'PORTUGUES');
+
+-----------------------------------------------------------------------
+
+-- CRIAÇÃO DE VIEWS:
+
+-- Manipulação: Não tem diferença com a tabela
+-- Mas uma VIEW não tem dados, somente se chamada.
+
+CREATE VIEW MELHORES_ARTIGOS_PT AS SELECT *
+  FROM ARTIGO
+  WHERE NOTA >= 9 AND IDIOMA = 'PORTUGUES'
+
+DROP VIEW MELHORES_ARTIGOS_PT;
