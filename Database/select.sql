@@ -67,3 +67,25 @@ FROM PESQUISADOR P;
 
 -- Data do sistema:
 -- SELECT SYSDATE
+
+SELECT NOME, NASCIMENTO
+FROM PESQUISADOR
+ORDER BY NASCIMNEOT DESC, NOME ASC;
+
+-- Junções (Produto cartesiano):
+-- INNER JOIN
+-- LEFT OUTER JOIN
+-- RIGHT OUTER JOIN
+-- FULL OUTER JOIN
+
+-- Se utilizar funçao de agregação (AVG), as outras colunas devem entrar como GROUP BY (exemplo o E.SIGLA)
+SELECT E.SIGLA, AVG (A.NOTA) AS MEDIA_NOTA
+FROM ARTIGO A INNER JOIN
+  EVENTO E ON A.COD = E.COD
+GROUP BY E.SIGLA;
+
+-- Função de agregação:
+-- MIN
+-- COUNT
+-- MAX
+-- SUM

@@ -1,3 +1,5 @@
+-- To generate: https://generatedata.com/generator
+
 INSERT INTO PESQUISADOR (CPF,NOME,INSTITUICAO,NASCIMENTO)
 VALUES
   ("21332426321","Quyn Thompson","Velit In Aliquet Inc.","26/10/06"),
@@ -127,3 +129,70 @@ VALUES
   ("27470831300","Christen Pace","Sodales At Institute","01/07/07"),
   ("37532704999","Isadora Kaufman","Placerat Velit LLP","07/12/03"),
   ("07528406073","Cleo Bridges","Sit Amet Foundation","23/07/08");
+
+-- * -------------------------------------------------------------------------* --
+
+INSERT INTO EVENTO (COD,NOME,SIGLA,ANO)
+VALUES
+  ("304","Nisi Incorporated","TVYFBMIA","2004"),
+  ("601","Curae Industries","PFCFLQEX","2013"),
+  ("187","At PC","GJMAOLBL","2017"),
+  ("141","Pellentesque Massa Limited","YYZXGZQC","2022"),
+  ("264","Ipsum Porta Institute","GJMYQBCS","2013"),
+  ("536","Consectetuer Adipiscing Elit Limited","GDQGFLYJ","2007"),
+  ("910","A Tortor LLP","LAMYJEPP","2016"),
+  ("390","Mauris Blandit Ltd","CGPVTHUR","2009"),
+  ("953","Aliquet Libero Integer Incorporated","CYSQCEWL","2006"),
+  ("994","Pharetra Nam Inc.","YDOBRMZN","2017");
+
+INSERT INTO EVENTO (COD,NOME,SIGLA,ANO)
+VALUES
+  ("691","Integer Vitae LLC","KKQBEWFT","2019"),
+  ("269","Sit Amet Ultricies Corporation","LYKACQNK","2014"),
+  ("276","Et Inc.","BGFOZOAL","2003"),
+  ("983","Proin Mi Foundation","MBHQUSWP","2002"),
+  ("248","Dui Semper Corporation","QRLGOBEB","2014"),
+  ("241","Nec Urna Et Corp.","CBYGEYLU","2006"),
+  ("686","Fermentum Industries","TAXTTQKG","2007"),
+  ("307","Tempor PC","DEMQNXGF","2013"),
+  ("125","Fringilla Corporation","EBATCGBG","2022"),
+  ("186","Justo Nec Ante LLP","CRRMCSGF","2017");
+
+INSERT INTO EVENTO (COD,NOME,SIGLA,ANO)
+VALUES
+  ("775","Luctus Ut Institute","RGBNQFXL","2006"),
+  ("307","Erat Limited","ZFMNZGHJ","2013"),
+  ("674","Magna A LLP","QBIVZOUL","2013"),
+  ("608","Sem Nulla Incorporated","OVSSCRCI","2016"),
+  ("853","Non Leo Vivamus Corporation","LYSJKUAD","2006"),
+  ("340","Nec Diam Corp.","KCCHVOUC","2015"),
+  ("623","Molestie Arcu Institute","IUMABBRR","2012"),
+  ("926","Augue Eu Ltd","SJUDUWVP","2016"),
+  ("531","Mauris Nulla Corp.","ILMOOCSS","2011"),
+  ("277","Cras Eu Consulting","FLFWXNIE","2022");
+
+INSERT INTO EVENTO (COD,NOME,SIGLA,ANO)
+VALUES
+  ("919","Velit LLP","JQHOXXQI","2023"),
+  ("201","In At Inc.","IRXITMIU","2006"),
+  ("181","Imperdiet Ornare LLP","GETLNCDZ","2013"),
+  ("544","Lorem Luctus Institute","TWZUSQPP","2004"),
+  ("378","Nulla Corporation","IHZQPSHT","2006"),
+  ("146","In Lobortis Limited","TBFQGLFI","2009"),
+  ("837","Pharetra PC","CKOPTBFE","2007"),
+  ("627","Id Ante Ltd","PKDYRFMI","2012"),
+  ("925","Vestibulum Massa Corporation","ZHLKWWLQ","2009"),
+  ("315","Nostra Limited","YFFHTPZZ","2004");
+  
+INSERT INTO EVENTO (COD,NOME,SIGLA,ANO)
+VALUES
+  ("928","Ipsum Associates","SLZOYPKE","2008"),
+  ("808","Augue Ac Ipsum Foundation","IYNXLZAB","2020"),
+  ("821","Nunc Sed Libero Ltd","NAQWTOCT","2009"),
+  ("306","Nec Euismod Industries","OBYEXNJM","2022"),
+  ("207","Diam Institute","KFKTNSDK","2014"),
+  ("395","Aliquam Incorporated","OTVELDOS","2005"),
+  ("899","Orci Quis Lectus LLC","XQASLDBU","2020"),
+  ("277","Neque Vitae Incorporated","UTGJFREQ","2010"),
+  ("253","Commodo Limited","LEIDXRHD","2004"),
+  ("303","Donec Consectetuer Mauris Foundation","PBDNUUKD","2004");
