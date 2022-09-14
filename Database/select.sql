@@ -83,6 +83,8 @@ SELECT E.SIGLA, AVG (A.NOTA) AS MEDIA_NOTA
 FROM ARTIGO A INNER JOIN
   EVENTO E ON A.COD = E.COD
 GROUP BY E.SIGLA;
+-- Where filtra antes do agrupamento, having filtra depois do agrupamento.
+-- HAVING AVG (A.NOTA) > 8;
 
 -- Função de agregação:
 -- MIN
