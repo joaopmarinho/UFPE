@@ -74,7 +74,7 @@
 
 ---
 
-13. CONSULTA(**data**, id_recepcionista, CRM, id_de_paciente)
+13. CONSULTA(**data**, cpf_recepcionista, cpf_paciente, cpf_medico, Formulário)
 
 - data -> CONSULTA(data)
 - (cpf_recepcionista, cpf_paciente, cpf_medico, Formulário) -> AGENDAMENTO(cpf_recepcionista, cpf_paciente, cpf_medico, Formulário)
