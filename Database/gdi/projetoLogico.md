@@ -49,10 +49,10 @@
 
 ---
 
-9. MEDICOS(**cpf**, chefia, CRM)
+9. MEDICO(**cpf**, chefia, CRM)
 
-- cpf -> PESSOA(cpf)
-- chefia -> MEDICOS(cpf)
+- cpf -> FUNCTIONARIO(cpf)
+- chefia -> MEDICO(cpf)
 
 ---
 
