@@ -8,7 +8,7 @@
 
 ## Projeto
 
-1. PESSOA(**cpf**, sexo, cep, bairro, cidade, rua, número, complemento)
+1. PESSOA(**cpf**, nome, sexo, cep, bairro, cidade, rua, número, complemento)
 
 ---
 
