@@ -10,8 +10,6 @@
 
 1. PESSOA(**cpf**, nome, sexo, cep, bairro, cidade, rua, número, complemento)
 
----
-
 2. FONE(**cpf, fone**)
 
 - cpf -> PESSOA(cpf)
@@ -30,12 +28,10 @@
 
 ---
 
-6. FUNCIONARIO(**cpf**, matricula, paga!)
+6. FUNCIONARIO(**cpf**, matricula, clinica!)
 
-- paga -> CLINICA(id_DA_CLINICA)
+- clinica -> CLINICA(id_DA_CLINICA)
 - cpf -> PESSOA(cpf)
-
----
 
 7. PACIENTE(**cpf**, id_paciente)
 
@@ -43,30 +39,23 @@
 
 ---
 
-8. RECEPCIONISTA(**cpf**, id_recepcionista)
+8. RECEPCIONISTA(**cpf**, [descricao]!)
 
 - cpf -> FUNCIONARIO(cpf)
+- descricao -> SETOR(descricao)
+
+9. SETOR(**descricao**)
 
 ---
 
-9. MEDICO(**cpf**, chefia, CRM)
+10. MEDICO(**cpf**, chefia, CRM)
 
 - cpf -> FUNCTIONARIO(cpf)
 - chefia -> MEDICO(cpf)
 
 ---
 
-10. EXAME(**cpf_paciente, cod**)
-
-- (cpf_paciente) -> PACIENTE(cpf)
-
-11. MEDICAMENTO(**cpf_paciente, cod**, medicamento)
-
-- (cpf_paciente, cod) -> EXAME(cpf_paciente, cod)
-
----
-
-12. AGENDAMENTO(**cpf_recepcionista, cpf_paciente, cpf_medico, Formulário**)
+11. AGENDAMENTO(**cpf_recepcionista, cpf_paciente, cpf_medico, Formulário**)
 
 - (cpf_recepcionista) -> RECEPCIONISTA(cpf)
 - (cpf_paciente) -> PACIENTE(cpf)
@@ -74,9 +63,30 @@
 
 ---
 
-13. CONSULTA(**data**, cpf_recepcionista, cpf_paciente, cpf_medico, Formulário)
+12. CONSULTA(**data**, cpf_recepcionista, cpf_paciente, cpf_medico, Formulário)
 
 - data -> CONSULTA(data)
 - (cpf_recepcionista, cpf_paciente, cpf_medico, Formulário) -> AGENDAMENTO(cpf_recepcionista, cpf_paciente, cpf_medico, Formulário)
 
-<!-- Falta Relacionamento 1:1 -->
+---
+
+13. EXAME(**cpf_paciente, cod**)
+
+- (cpf_paciente) -> PACIENTE(cpf)
+
+---
+
+14. MEDICAMENTO(**cpf_paciente, cod, medicamento**)
+
+- (cpf_paciente, cod) -> EXAME(cpf_paciente, cod)
+
+---
+
+15. TERCEIRO(**cnpj**, razao_social, funcao, contato)
+
+---
+
+16. SERVICO(**cnpj, id_clinica**, contrato)
+
+- cnpj -> TERCEIRO(cnpj)
+- id_clinica -> CLINICA(id_da_clinica)
