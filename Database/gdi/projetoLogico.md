@@ -38,13 +38,12 @@
 - cpf -> PESSOA(cpf)
 
 ---
+8. SETOR(**descricao**)
 
-8. RECEPCIONISTA(**cpf**, [descricao]!)
+9. RECEPCIONISTA(**cpf**, [descricao]!)
 
 - cpf -> FUNCIONARIO(cpf)
 - descricao -> SETOR(descricao)
-
-9. SETOR(**descricao**)
 
 ---
 
