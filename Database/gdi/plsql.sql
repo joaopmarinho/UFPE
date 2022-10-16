@@ -45,3 +45,37 @@ BEGIN
   :NEW.CPF := value;
 END;
 /
+
+CREATE OR REPLACE PROCEDURER FillTernary
+DECLARE
+  clinica CLINICA.ID_CLINICA%TYPE;
+  terceirizado EMPRESA_TERCEIRIZADA.CNPJ%TYPE;
+  contrato CONTRATO.COD%TYPE; 
+  contagem INT;
+BEGIN
+  -- Verify how many inserts to do:
+
+  SELECT COUNT(*) INTO contagem FROM CLINICA, CONTRATO, EMPRESA_TERCEIRIZADA;
+
+  FOR i IN 1..contagem LOOP
+    SELECT ID_CLINICA INTO clinica FROM
+      ( SELECT ID_CLINICA FROM CLINICA
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1
+
+    SELECT CNPJ INTO terceirizado FROM
+      ( SELECT CNPJ FROM EMPRESA_TERCEIRIZADA
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1
+
+    SELECT COD INTO contrato FROM
+      ( SELECT COD FROM CONTRATO
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1
+
+    INSERT INTO SERVICO (ID_SERVICO, CNPJ, COD) 
+      VALUES (clinica, terceirizado, contrato)
+  END LOOP
+
+END;
+/
