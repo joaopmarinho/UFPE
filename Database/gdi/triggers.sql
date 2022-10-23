@@ -142,24 +142,19 @@ DECLARE
 BEGIN
   IF :NEW.CPF IS NULL THEN
     SELECT CPF INTO new_cpf 
-    FROM FUNCIONARIO
-    WHERE CPF NOT IN (
-      SELECT CPF 
-      FROM MEDICOS
-    ) AND ROWNUM = 1;
+      FROM FUNCIONARIO
+      WHERE CPF NOT IN (
+        SELECT CPF 
+        FROM PAGA_FUNCIONARIO
+      ) AND ROWNUM = 1;
 
     :NEW.CPF := new_cpf;
-  END IF;
 
-  IF :NEW.ID_CLINICA IS NULL THEN
-    SELECT ID INTO new_id FROM
-      ( SELECT ID FROM CLINICA
-      ORDER BY dbms_random.value )
-      WHERE rownum = 1;
-    
-    IF new_id IS NOT NULL THEN
-      :NEW.ID_CLINICA := new_id;
-    END IF;
+    SELECT ID_CLINICA INTO new_id
+      FROM FUNCIONARIO
+      WHERE CPF = new_cpf;
+
+    :NEW.ID_CLINICA := new_id;
   END IF;
 END;
 /
