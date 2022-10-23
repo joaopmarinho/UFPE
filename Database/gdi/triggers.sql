@@ -255,10 +255,12 @@ CREATE OR REPLACE PROCEDURE FillRecep IS
   contagem numeric := 30;
 BEGIN
   FOR i IN 1..contagem LOOP
-    SELECT DESCRICAO INTO new_desc FROM
-      ( SELECT DESCRICAO FROM SETOR
-      ORDER BY dbms_random.value )
-    WHERE rownum = 1;
+    SELECT DESCRICAO INTO new_desc
+      FROM SETOR WHERE DESCRICAO
+      NOT IN (
+        SELECT DESCRICAO
+        FROM RECEPCIONISTA
+      ) AND ROWNUM = 1;
 
     SELECT CPF INTO new_cpf 
       FROM FUNCIONARIO
