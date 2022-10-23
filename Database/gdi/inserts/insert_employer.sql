@@ -1,5 +1,3 @@
--- Lembrar de criar script para insert de 30 recepcionistas!
-
 INSERT INTO MEDICOS (CRM)
 VALUES ('21916181');
 INSERT INTO MEDICOS (CRM)

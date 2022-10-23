@@ -129,10 +129,6 @@ BEGIN
 END;
 /
 
--- Aqui está dando problema:
--- Provavelmente está ferindo o príncipio
--- De 1 : N
-
 CREATE OR REPLACE TRIGGER PagaFK
   BEFORE INSERT ON PAGA_FUNCIONARIO
   FOR EACH ROW
@@ -196,43 +192,62 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURER FillTernary
-DECLARE
-  clinica CLINICA.ID_CLINICA%TYPE;
-  terceirizado EMPRESA_TERCEIRIZADA.CNPJ%TYPE;
-  contrato CONTRATO.COD%TYPE; 
-  contagem INT;
+CREATE OR REPLACE PROCEDURE FillTernary IS
+  id CLINICA.ID%TYPE;
+  cnpj EMPRESA_TERCEIRIZADA.CNPJ%TYPE;
+  cod CONTRATO.COD%TYPE; 
+  contagem numeric := 50;
 BEGIN
-  -- Verify how many inserts to do:
-
-  SELECT COUNT(*) INTO contagem FROM CLINICA, CONTRATO, EMPRESA_TERCEIRIZADA;
-
   FOR i IN 1..contagem LOOP
-    SELECT ID_CLINICA INTO clinica FROM
-      ( SELECT ID_CLINICA FROM CLINICA
+    SELECT ID INTO id FROM
+      ( SELECT ID FROM CLINICA
       ORDER BY dbms_random.value )
       WHERE rownum = 1;
 
-    SELECT CNPJ INTO terceirizado FROM
+    SELECT CNPJ INTO cnpj FROM
       ( SELECT CNPJ FROM EMPRESA_TERCEIRIZADA
       ORDER BY dbms_random.value )
       WHERE rownum = 1;
 
-    SELECT COD INTO contrato FROM
+    SELECT COD INTO cod FROM
       ( SELECT COD FROM CONTRATO
       ORDER BY dbms_random.value )
       WHERE rownum = 1;
 
-    INSERT INTO SERVICO (ID_SERVICO, CNPJ, COD) 
-      VALUES (clinica, terceirizado, contrato)
-  END LOOP
-
+    INSERT INTO SERVICO (ID_CLINICA, CNPJ, COD) 
+      VALUES (id, cnpj, cod);
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE('Adicionado 50 linhas para SERVICO');
 END;
 /
 
-CREATE OR REPLACE PROCEDURER addRecepcionista
+CREATE OR REPLACE PROCEDURE FillRecep IS
+  new_cpf FUNCIONARIO.CPF%TYPE;
+  new_desc SETOR.DESCRICAO%TYPE;
+  contagem numeric := 30;
+BEGIN
+  FOR i IN 1..contagem LOOP
+    SELECT DESCRICAO INTO new_desc FROM
+      ( SELECT DESCRICAO FROM SETOR
+      ORDER BY dbms_random.value )
+    WHERE rownum = 1;
 
-CREATE OR REPLACE PROCEDURER addFazServico
+    SELECT CPF INTO new_cpf 
+      FROM FUNCIONARIO
+      WHERE CPF NOT IN (
+        SELECT CPF 
+        FROM PAGA_FUNCIONARIO
+      ) AND ROWNUM = 1;
+    
+    INSERT INTO RECEPCIONISTA
+      (CPF, DESCRICAO) VALUES
+      (new_cpf, new_desc);
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE('Adicionado 30 linhas para RECEPCIONISTA');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE addFazServico
 
 CREATE OR REPLACE TRIGGER beneficioFK
   BEFORE INSERT ON BENEFICIO
