@@ -125,7 +125,7 @@ BEGIN
     IF value IS NOT NULL THEN
       :NEW.SUPERVISOR := value;
     ELSE
-      :NEW.SUPERIOR := null;
+      :NEW.SUPERVISOR := null;
     END IF;
   END IF;
 END;
