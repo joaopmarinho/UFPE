@@ -124,6 +124,8 @@ BEGIN
     
     IF value IS NOT NULL THEN
       :NEW.SUPERVISOR := value;
+    ELSE
+      :NEW.SUPERIOR := null;
     END IF;
   END IF;
 END;
@@ -221,6 +223,36 @@ BEGIN
 END;
 /
 
+CREATE OR REPLACE PROCEDURE FillAgendamento IS
+  p_cpf PACIENTE.CPF%TYPE;
+  r_cpf RECEPCIONISTA.CPF%TYPE;
+  m_cpf MEDICOS.CPF%TYPE; 
+  contagem numeric := 50;
+BEGIN
+  FOR i IN 1..contagem LOOP
+    SELECT CPF INTO p_cpf FROM
+      ( SELECT CPF FROM PACIENTE
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1;
+
+    SELECT CPF INTO r_cpf FROM
+      ( SELECT CPF FROM RECEPCIONISTA
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1;
+
+    SELECT CPF INTO m_cpf FROM
+      ( SELECT CPF FROM MEDICOS
+      ORDER BY dbms_random.value )
+      WHERE rownum = 1;
+
+    INSERT INTO AGENDAMENTO (CPF_PACIENTE, CPF_RECEPCIONISTA, CPF_MEDICO) 
+      VALUES (p_cpf, r_cpf, m_cpf);
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE('Adicionado 50 linhas para AGENDAMENTO');
+END;
+/
+
+-- Problema é que é 1 pra 1 e agora?
 CREATE OR REPLACE PROCEDURE FillRecep IS
   new_cpf FUNCIONARIO.CPF%TYPE;
   new_desc SETOR.DESCRICAO%TYPE;
@@ -247,7 +279,6 @@ BEGIN
 END;
 /
 
-CREATE OR REPLACE PROCEDURE addFazServico
 
 CREATE OR REPLACE TRIGGER beneficioFK
   BEFORE INSERT ON BENEFICIO
