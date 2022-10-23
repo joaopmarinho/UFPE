@@ -252,7 +252,6 @@ BEGIN
 END;
 /
 
--- Problema é que é 1 pra 1 e agora?
 CREATE OR REPLACE PROCEDURE FillRecep IS
   new_cpf FUNCIONARIO.CPF%TYPE;
   new_desc SETOR.DESCRICAO%TYPE;
@@ -279,24 +278,26 @@ BEGIN
 END;
 /
 
-
-CREATE OR REPLACE TRIGGER beneficioFK
-  BEFORE INSERT ON BENEFICIO
-  FOR EACH ROW
-DECLARE
-  new_cpf FUNCIONARIO.CPF%TYPE;
-  new_id CLINICA.ID%TYPE;
+CREATE OR REPLACE PROCEDURE FillBeneficio IS
+  new_id BENEFICIO.ID_CLINICA%TYPE;
+  new_cpf BENEFICIO.CPF%TYPE;
+  contagem numeric := 75;
 BEGIN
-  IF :NEW.CPF IS NULL THEN
-    SELECT CPF, ID_CLINICA 
-      INTO new_cpf, new_id 
-      FROM ( SELECT CPF, ID_CLINICA 
-      FROM PAGA_FUNCIONARIO
+  FOR i IN 1..contagem LOOP
+    SELECT CPF INTO new_cpf FROM 
+      ( SELECT CPF FROM PAGA_FUNCIONARIO
       ORDER BY dbms_random.value )
-      WHERE rownum = 1;
+    WHERE rownum = 1;
 
-    :NEW.CPF := new_cpf;
-    :NEW.ID_CLINICA := new_id;
-  END IF;
+    SELECT ID_CLINICA INTO new_id
+      FROM PAGA_FUNCIONARIO
+    WHERE CPF = new_cpf;
+
+    INSERT INTO BENEFICIO
+      (CPF, ID_CLINICA) VALUES
+      (new_cpf, new_id);
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE('Adicionado 75 linhas para BENEFICIO');
 END;
 /
+
