@@ -1,3 +1,11 @@
+DECLARE begin
+  FillTernary;
+  FillRecep;
+  FillAgendamento;
+  FillBeneficio; 
+end;
+/
+
 INSERT INTO FORMULARIO (TIPO)
 VALUES ('purus ac tellus. Suspendisse');
 INSERT INTO FORMULARIO (TIPO)
