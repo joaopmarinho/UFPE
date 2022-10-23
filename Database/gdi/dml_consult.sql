@@ -1,8 +1,8 @@
 -- MOSTRANDO NOME DA CLINICA QUE POSSUEM MAIS DE 10 FUNCIONARIOS (COM INNER JOIN)
-select c.razao_social, count(*) qtd_func from funcionario f
-inner join clinica c on c.id = f.id_clinica
-group by c.razao_social
-having count(*) > 10
+SELECT c.razao_social, count(*) qtd_func FROM funcionario f
+INNER JOIN clinica c ON c.id = f.id_clinica
+GROUP BY c.razao_social
+HAVING count(*) > 10
 
 -- MOSTRANDO ID DAS CLINICAS QUE TEM MAIS FUNCIONARIOS QUE A MÉDIA 
 SELECT ID_CLINICA, COUNT(*) 
@@ -44,3 +44,61 @@ ON (M.CPF = F.CPF)
 WHERE M.CPF IN (SELECT CPF 
                 FROM PAGA_FUNCIONARIO
                 WHERE VALOR > 5000);    
+
+-- FUNCAO DE UMA EMPRESA QUE TEM INDUSTRIES NO NOME
+SELECT funcao FROM EMPRESA_TERCEIRIZADA
+WHERE razao_social LIKE ('%Industries')
+
+-- QUANTIDADE DE MÉDICOS QUE NAO TEM SUPERVISORES
+SELECT count(*) FROM medicos
+WHERE cpf in (SELECT supervisor FROM medicos)
+
+-- FUNCIONARIOS QUE TRABALHAM DE GRAÇA (USANDO LEFT JOIN)
+SELECT nome FROM funcionario f
+LEFT JOIN paga_funcionario p on p.cpf = f.cpf
+WHERE f.id_clinica is not null and p.cpf is null
+
+-- FUNCIONARAIOS QUE TRABALHAM DE GRAÇA (USANDO RIGHT JOIN)
+SELECT nome FROM paga_funcionario p
+RIGHT JOIN funcionario f on p.cpf = f.cpf
+WHERE f.id_clinica is not null and p.cpf is null
+
+-- TODOS OS FUNCIONARIOS QUE NÃO SÃO MÉDICOS (USANDO ANTI-JOIN COM NOT IN) 
+SELECT nome FROM funcionario
+WHERE cpf not in (SELECT cpf FROM medicos)
+
+-- MEDICOS QUE NAO RECEBEM SALARIO (USANDO semi-JOIN E COM IN)
+SELECT nome FROM funcionario
+WHERE cpf in (SELECT cpf FROM medicos) and cpf not in (SELECT cpf FROM paga_funcionario)
+
+-- NOME E SALARIO DE FUNCIONARIOS QUE TRABALHAM NA CLINICA DE ID 8 E QUE POSSUI CAPACIDADE ACIMA DE 100 PESSOAS (USANDO SUBCONSULTA E SEMI-JOIN COM IN)
+SELECT nome, valor FROM paga_funcionario p, funcionario f
+WHERE p.id_clinica in (SELECT id FROM clinica
+                    WHERE id = 8 and capacidade > 100) and
+                    p.cpf in (SELECT cpf FROM funcionario)
+                    and valor is not null
+
+-- QUANTOS MÉDICOS RECEBEM SALARIO
+SELECT count(*) as medicosAssalariados FROM medicos
+WHERE cpf in (SELECT cpf FROM paga_funcionario)
+
+--RAZÃO SOCIAL DAS CLINICAS DOS ESTADOS QUE TEM MAIS DE 2 CLINICAS(SUB-COSULTA TIPO TABELA)
+
+SELECT RAZAO_SOCIAL,ESTADO FROM CLINICA
+WHERE ESTADO in(SELECT ESTADO FROM CLINICA
+GROUP BY ESTADO
+having COUNT(ESTADO) > 2)
+order by ESTADO
+
+-- NOME DE TODOS OS SUPERVISORES E QUANTIDADE DE MEDICOS QUE SUPERVISIONAM MAIS DE 3 MÉDICOS (USANDO GROUP BY E INNER JOIN)
+
+SELECT NOME, count(SUPERVISOR) as qtd FROM FUNCIONARIO 
+inner join MEDICOS on FUNCIONARIO.CPF = MEDICOS.SUPERVISOR
+group by nome, Supervisor
+HAVING COUNT(SUPERVISOR) > 3
+order by QTD DESC
+
+-- NOME DE TODOS OS PACIENTES QUE NÃO SÃO FUNCIONARIOS (ANTI-JOIN COM NOT EXISTS)
+SELECT nome FROM paciente p
+WHERE not exists (SELECT f.cpf FROM funcionario f
+                WHERE p.cpf = f.cpf)
