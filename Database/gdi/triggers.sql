@@ -122,11 +122,7 @@ BEGIN
       ORDER BY dbms_random.value )
       WHERE rownum = 1;
     
-    IF value IS NOT NULL THEN
-      :NEW.SUPERVISOR := value;
-    ELSE
-      :NEW.SUPERVISOR := null;
-    END IF;
+    :NEW.SUPERVISOR := value;
   END IF;
 END;
 /
@@ -184,10 +180,11 @@ DECLARE
 BEGIN
   IF :NEW.COD IS NULL THEN
     SELECT COD INTO cod
-      FROM ( SELECT COD 
       FROM AGENDAMENTO
-      ORDER BY dbms_random.value )
-      WHERE rownum = 1;
+      WHERE COD NOT IN (
+        SELECT COD 
+        FROM FORMULARIO
+      ) AND ROWNUM = 1;
 
     :NEW.COD := cod;
   END IF;
@@ -227,7 +224,7 @@ CREATE OR REPLACE PROCEDURE FillAgendamento IS
   p_cpf PACIENTE.CPF%TYPE;
   r_cpf RECEPCIONISTA.CPF%TYPE;
   m_cpf MEDICOS.CPF%TYPE; 
-  contagem numeric := 50;
+  contagem numeric := 75;
 BEGIN
   FOR i IN 1..contagem LOOP
     SELECT CPF INTO p_cpf FROM
@@ -248,7 +245,7 @@ BEGIN
     INSERT INTO AGENDAMENTO (CPF_PACIENTE, CPF_RECEPCIONISTA, CPF_MEDICO) 
       VALUES (p_cpf, r_cpf, m_cpf);
   END LOOP;
-  DBMS_OUTPUT.PUT_LINE('Adicionado 50 linhas para AGENDAMENTO');
+  DBMS_OUTPUT.PUT_LINE('Adicionado 75 linhas para AGENDAMENTO');
 END;
 /
 
