@@ -1,7 +1,5 @@
 -- Lembrar de criar script para insert de 30 recepcionistas!
 
-DROP TABLE MEDICOS;
-
 INSERT INTO MEDICOS (CRM)
 VALUES ("21916-181");
 INSERT INTO MEDICOS (CRM)
@@ -244,7 +242,6 @@ INSERT INTO MEDICOS (CRM)
 VALUES ("65033-094");
 
 -- -----------------------------------------------
-DROP TABLE PAGA_FUNCIONARIO;
 
 INSERT INTO PAGA_FUNCIONARIO (VALOR)
 VALUES ("$4251.66");
@@ -549,8 +546,6 @@ VALUES ("$2748.57");
 
 -- -------------------------------------------------------------
 
-DROP TABLE BENEFICIO;
-
 INSERT INTO BENEFICIO (COD)
 VALUES ("61742");
 INSERT INTO BENEFICIO (COD)
@@ -853,8 +848,6 @@ INSERT INTO BENEFICIO (COD)
 VALUES ("42235");
 
 -- ------------------------------------
-
-DROP TABLE TIPO_BENEFICIO;
 
 INSERT INTO TIPO_BENEFICIO (TIPO)
 VALUES ("inss");

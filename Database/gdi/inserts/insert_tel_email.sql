@@ -1,5 +1,3 @@
-DROP TABLE FONE_CLINICA;
-
 INSERT INTO FONE_CLINICA (FONE)
 VALUES ("90525-6356");
 INSERT INTO FONE_CLINICA (FONE)
@@ -42,8 +40,6 @@ INSERT INTO FONE_CLINICA (FONE)
 VALUES ("92639-4641");
 
 -- ----------------------------
-
-DROP TABLE FONE_FUNCIONARIO;
 
 INSERT INTO FONE_FUNCIONARIO (FONE)
 VALUES ("90752-4726");
@@ -348,8 +344,6 @@ VALUES ("91151-1241");
 
 -- -------------------------------------------
 
-DROP TABLE FONE_PACIENTE;
-
 INSERT INTO FONE_PACIENTE (FONE)
 VALUES ("96642-5767");
 INSERT INTO FONE_PACIENTE (FONE)
@@ -552,8 +546,6 @@ INSERT INTO FONE_PACIENTE (FONE)
 VALUES ("93757-1422");
 
 -- -------------------------------------------------
-
-DROP TABLE EMAIL_FUNCIONARIO;
 
 INSERT INTO EMAIL_FUNCIONARIO (EMAIL)
 VALUES ("arcu@yahoo.br");
@@ -857,8 +849,6 @@ INSERT INTO EMAIL_FUNCIONARIO (EMAIL)
 VALUES ("tristique.pharetra@outlook.com");
 
 -- ----------------------------------------------
-
-DROP TABLE EMAIL_PACIENTE;
 
 INSERT INTO EMAIL_PACIENTE (EMAIL)
 VALUES ("magnis.dis.parturient@outlook.com");
